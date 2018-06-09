@@ -4,83 +4,150 @@
 {% endblock %}
 
 {% block content %}
-    <div id="menu" class="content">
+    <div id="left-menu" class="content">
         <div class="pure-menu">
-            <div style="height: 20px"></div>
+            <div style="height: 30px"></div>
             <span class="pure-menu-heading"></span>
             <ul class="pure-menu-list">
-                <li class="pure-menu-item centered" style="padding: 10px 0 20px 0;">
-                    <button class="primary-button pure-button">Aujourd'hui</button>
-                </li>
-                <li class="pure-menu-item">
-                    <a href="#" class="pure-menu-link">Naviguer</a>
-                </li>
-                <li class="pure-menu-item">
-                    <a href="#" class="pure-menu-link">Chercher</a>
-                </li>
-                <li class="pure-menu-item">
-                    <a href="#" class="pure-menu-link">Backup</a>
+                <li class="pure-menu-item centered">
+                    <button class="primary-button pure-button" style="background: transparent">
+                        <i class="fas fa-search" style="color: #FFF"></i>
+                    </button>
+                    <button class="primary-button pure-button" style="background: transparent">
+                        <i class="fas fa-cogs"></i>
+                    </button>
                 </li>
                 <li class="pure-menu-heading">
                     <div style="height: 20px"></div>
-                    Labels
+                    Sujets
                 </li>
                 <li class="pure-menu-item">
-                    <a href="#" class="pure-menu-link">
+                    <a href="#" class="pure-menu-link deletable">
                         <span class="tag1"></span>
                         Non trié
                     </a>
                 </li>
                 <li class="pure-menu-item">
-                    <a href="#" class="pure-menu-link">
+                    <a href="#" class="pure-menu-link deletable">
                         <span class="tag2"></span>
                         À traiter
                     </a>
                 </li>
                 <li class="pure-menu-item">
-                    <a href="#" class="pure-menu-link">
+                    <a href="#" class="pure-menu-link deletable">
                         <span class="tag3"></span>
                         Vies passées
                     </a>
                 </li>
                 <li class="pure-menu-item">
-                    <a href="#" class="pure-menu-link">
+                    <a href="#" class="pure-menu-link deletable">
                         <span class="tag4"></span>
                         Vies parallèles
                     </a>
                 </li>
+                <li class="pure-menu-item centered" style="padding: 10px 0 20px 0;">
+                    <button class="primary-button pure-button" data-micromodal-trigger="modal-1" style="background: transparent">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </li>
             </ul>
         </div>
-        <div id="side" class="content">
-            <div class="pure-menu">
-                <span class="pure-menu-heading centered">Date</span>
-                <ul class="pure-menu-list">
-                    <li class="pure-menu-item centered">
-                        <a href="#" class="pure-menu-link">2014</a>
-                    </li>
-
-                    <li class="pure-menu-item centered">
-                        <a href="#" class="pure-menu-link">2015</a>
-                    </li>
-
-                    <li class="pure-menu-item centered">
-                        <a href="#" class="pure-menu-link">2016</a>
-                    </li>
-
-                    <li class="pure-menu-item centered">
-                        <a href="#" class="pure-menu-link">2017</a>
-                    </li>
-
-                    <li class="pure-menu-item centered">
-                        <a href="#" class="pure-menu-link">2018</a>
-                    </li>
-                </ul>
+    </div>
+    <div id="right-menu" class="content">
+        <div class="pure-menu">
+        <div style="height: 20px"></div>
+        <span class="pure-menu-heading centered"></span>
+            <ul class="pure-menu-list">
+                <li class="pure-menu-item centered">
+                    <button class="primary-button pure-button" style="min-width: 100px; margin-bottom: 10px;">Aujourd'hui</button>
+                </li>
+                <li class="pure-menu-item centered">
+                    <a href="#" class="pure-menu-link">2014</a>
+                </li>
+                <li class="pure-menu-item centered">
+                    <a href="#" class="pure-menu-link">2015</a>
+                </li>
+                <li class="pure-menu-item centered">
+                    <a href="#" class="pure-menu-link">2016</a>
+                </li>
+                <li class="pure-menu-item centered">
+                    <a href="#" class="pure-menu-link">2017</a>
+                </li>
+                <li class="pure-menu-item centered">
+                    <a href="#" class="pure-menu-link">2018</a>
+                </li>
+                <li class="pure-menu-heading">
+                    <div style="height: 20px"></div>
+                    Templates
+                </li>
+                <li class="pure-menu-item">
+                    <a href="#" class="pure-menu-link">
+                        <span class="tag1"></span>
+                        Rêve
+                    </a>
+                </li>
+                <li class="pure-menu-item">
+                    <a href="#" class="pure-menu-link">
+                        <span class="tag2"></span>
+                        Journée
+                    </a>
+                </li>
+                <li class="pure-menu-item centered" style="padding: 10px 0 20px 0;">
+                    <button class="primary-button pure-button" style="background: transparent">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="content" class="content">
+        <div style="height: 45px"></div>
+        <form class="pure-form">
+            <input class="search-bar" />
+            <textarea class="text-content" wrap="hard"></textarea>
+        </form>
+    </div>
+    <div class="modal micromodal-slide" id="modal-1" aria-hidden="true">
+        <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+            <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
+                <header class="modal__header">
+                    <h2 class="modal__title" id="modal-1-title">
+                        Ajout de sujet
+                    </h2>
+                </header>
+                <main class="modal__content" id="modal-1-content">
+                    <form class="pure-form">
+                        <button class="color-picker pure-button" style="width: 30px; height: 30px;" type="button" data-huebee></button>
+                        <input class="search-bar" style="width: 360px; left: inherit; border: 1px solid #000; box-shadow: none;"/>
+                        <br/>
+                    </form>
+                </main>
+                <footer class="modal__footer">
+                    <button class="primary-button pure-button">Ajouter</button>
+                    <button class="primary-button pure-button" data-micromodal-close style="background: #AAA; color: #000;">Annuler</button>
+                </footer>
             </div>
         </div>
     </div>
+
     <script type="text/javascript">
         $(document).ready(function() {
+            MicroModal.init();
 
+            var hueb = new Huebee('.color-picker', {
+                notation: 'hex',
+                saturations: 1,
+                staticOpen: true,
+            });
+
+            /*let items = [
+                { name: 'Editer', fn: function(target) { console.log('Cut', target); }},
+            ];
+
+            new ContextMenu('.deletable', items, {
+                className: 'custom-theme',
+                minimalStyling: true
+            });*/
         });
     </script>
 {% endblock %}
