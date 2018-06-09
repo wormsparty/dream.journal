@@ -1,0 +1,116 @@
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+}
+
+a {
+    text-decoration: none;
+    color: #1b98f8;
+}
+
+#menu {
+    width: 180px;
+    height: 100%;
+    background-color: #333;
+}
+
+#side {
+    width: 160px;
+    height: 100%;
+    background-color: #333;
+    position: absolute;
+    left: 180px;
+    top: 0;
+    border-left: 1px solid #222;
+
+}
+
+.centered {
+    text-align: center;
+}
+
+.pure-button {
+    color: #fff;
+    background: #1b98f8;
+    border-radius: 5px;
+    padding: 8px 12px 8px 12px;
+}
+
+.pure-menu-active > .pure-menu-link,
+.pure-menu-link:hover,
+.pure-menu-link:focus {
+    background: #222;
+    color: #FFF;
+}
+
+.pure-menu-heading {
+    color: #FFF;
+    text-transform: initial;
+}
+
+.pure-menu-link {
+    color: #AAA;
+}
+
+.pure-menu-item {
+    color: #AAA;
+}
+
+.tag1 {
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+    margin-right: 0.5em;
+    border-radius: 3px;
+    background: #ffc94c;
+}
+
+.tag2 {
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+    margin-right: 0.5em;
+    border-radius: 3px;
+    background: #4cffc9;
+}
+
+.tag3 {
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+    margin-right: 0.5em;
+    border-radius: 3px;
+    background: #c94cff;
+}
+
+.tag4 {
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+    margin-right: 0.5em;
+    border-radius: 3px;
+    background: #c9ff4c;
+}
+
+.pure-table {
+    width: 100%;
+}
+
+.list-even {
+    background: #444;
+    color: #AAA;
+    text-align: center;
+}
+
+.list-odd {
+    background: #333;
+    color: #AAA;
+    text-align: center;
+}
+
+.pure-table {
+    border: 0;
+}

@@ -1,8 +1,86 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>Dream Journal</h1>
 {% endblock %}
 
 {% block content %}
+    <div id="menu" class="content">
+        <div class="pure-menu">
+            <div style="height: 20px"></div>
+            <span class="pure-menu-heading"></span>
+            <ul class="pure-menu-list">
+                <li class="pure-menu-item centered" style="padding: 10px 0 20px 0;">
+                    <button class="primary-button pure-button">Aujourd'hui</button>
+                </li>
+                <li class="pure-menu-item">
+                    <a href="#" class="pure-menu-link">Naviguer</a>
+                </li>
+                <li class="pure-menu-item">
+                    <a href="#" class="pure-menu-link">Chercher</a>
+                </li>
+                <li class="pure-menu-item">
+                    <a href="#" class="pure-menu-link">Backup</a>
+                </li>
+                <li class="pure-menu-heading">
+                    <div style="height: 20px"></div>
+                    Labels
+                </li>
+                <li class="pure-menu-item">
+                    <a href="#" class="pure-menu-link">
+                        <span class="tag1"></span>
+                        Non trié
+                    </a>
+                </li>
+                <li class="pure-menu-item">
+                    <a href="#" class="pure-menu-link">
+                        <span class="tag2"></span>
+                        À traiter
+                    </a>
+                </li>
+                <li class="pure-menu-item">
+                    <a href="#" class="pure-menu-link">
+                        <span class="tag3"></span>
+                        Vies passées
+                    </a>
+                </li>
+                <li class="pure-menu-item">
+                    <a href="#" class="pure-menu-link">
+                        <span class="tag4"></span>
+                        Vies parallèles
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div id="side" class="content">
+            <div class="pure-menu">
+                <span class="pure-menu-heading centered">Date</span>
+                <ul class="pure-menu-list">
+                    <li class="pure-menu-item centered">
+                        <a href="#" class="pure-menu-link">2014</a>
+                    </li>
+
+                    <li class="pure-menu-item centered">
+                        <a href="#" class="pure-menu-link">2015</a>
+                    </li>
+
+                    <li class="pure-menu-item centered">
+                        <a href="#" class="pure-menu-link">2016</a>
+                    </li>
+
+                    <li class="pure-menu-item centered">
+                        <a href="#" class="pure-menu-link">2017</a>
+                    </li>
+
+                    <li class="pure-menu-item centered">
+                        <a href="#" class="pure-menu-link">2018</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+        });
+    </script>
 {% endblock %}
