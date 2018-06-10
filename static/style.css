@@ -269,3 +269,7 @@ a {
 .micromodal-slide .modal__overlay {
   will-change: transform;
 }
+
+.color-picker {
+    text-indent: -9999em;
+}

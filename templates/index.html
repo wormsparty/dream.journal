@@ -8,7 +8,7 @@
         <div class="pure-menu">
             <div style="height: 30px"></div>
             <span class="pure-menu-heading"></span>
-            <ul class="pure-menu-list">
+            <ul id="subject-list" class="pure-menu-list">
                 <li class="pure-menu-item centered">
                     <button class="primary-button pure-button" style="background: transparent">
                         <i class="fas fa-search" style="color: #FFF"></i>
@@ -21,31 +21,7 @@
                     <div style="height: 20px"></div>
                     Sujets
                 </li>
-                <li class="pure-menu-item">
-                    <a href="#" class="pure-menu-link deletable">
-                        <span class="tag1"></span>
-                        Non trié
-                    </a>
-                </li>
-                <li class="pure-menu-item">
-                    <a href="#" class="pure-menu-link deletable">
-                        <span class="tag2"></span>
-                        À traiter
-                    </a>
-                </li>
-                <li class="pure-menu-item">
-                    <a href="#" class="pure-menu-link deletable">
-                        <span class="tag3"></span>
-                        Vies passées
-                    </a>
-                </li>
-                <li class="pure-menu-item">
-                    <a href="#" class="pure-menu-link deletable">
-                        <span class="tag4"></span>
-                        Vies parallèles
-                    </a>
-                </li>
-                <li class="pure-menu-item centered" style="padding: 10px 0 20px 0;">
+                <li id="add-subject" class="pure-menu-item centered" style="padding: 10px 0 20px 0;">
                     <button class="primary-button pure-button" data-micromodal-trigger="modal-1" style="background: transparent">
                         <i class="fas fa-plus"></i>
                     </button>
@@ -117,27 +93,68 @@
                 </header>
                 <main class="modal__content" id="modal-1-content">
                     <form class="pure-form">
-                        <button class="color-picker pure-button" style="width: 30px; height: 30px;" type="button" data-huebee></button>
-                        <input class="search-bar" style="width: 360px; left: inherit; border: 1px solid #000; box-shadow: none;"/>
+                        <button id="ajouter_couleur" class="color-picker pure-button" style="width: 30px; height: 30px; background-color: rgb(255, 255, 255);" type="button">#FFFFFF</button>
+                        <input id="ajouter_sujet" class="search-bar" style="width: 360px; left: inherit; border: 1px solid #000; box-shadow: none;"/>
                         <br/>
                     </form>
                 </main>
                 <footer class="modal__footer">
-                    <button class="primary-button pure-button">Ajouter</button>
-                    <button class="primary-button pure-button" data-micromodal-close style="background: #AAA; color: #000;">Annuler</button>
+                    <button class="primary-button pure-button" style="margin-left: 300px" onclick="onAjouter()">Ajouter</button>
                 </footer>
             </div>
         </div>
     </div>
 
     <script type="text/javascript">
+        function onAjouter(e) {
+            var sujet = $('#ajouter_sujet').val();
+            var couleur = $('#ajouter_couleur').text();
+
+            console.log('Sujet à ajouter: ' + sujet + ', couleur: ' + couleur);
+
+           /* if (sujet !== undefined && sujet.trim() !== '') {
+                $.post('/add_subject', {
+                    subject: sujet,
+                    color: couleur
+                }, function() {
+                    console.log('Posté');
+                    location.reload();
+                });
+            }*/
+        }
+
         $(document).ready(function() {
             MicroModal.init();
 
-            var hueb = new Huebee('.color-picker', {
+            new Huebee('.color-picker', {
                 notation: 'hex',
                 saturations: 1,
-                staticOpen: true,
+            });
+
+            $.post('/get_subjects', null, function(data) {
+                console.log('get_subjects: ' + data);
+
+                let json = JSON.parse(data);
+                let subject_list = $('#subject-list');
+                let add_subject = $('#add-subject');
+
+               /* for(let i = 0; i < json.length; i++)
+                {
+                    let newElement = document.createElement('div');
+
+                    newElement.innerHTML = `
+                       <li class="pure-menu-item">
+                            <a href="#" class="pure-menu-link deletable">
+                                <span class="tag" style="background: ${json[i].color}"></span>
+                                ${json[i].subject}
+                            </a>
+                       </li>
+                    `;
+
+                    subject_list.insertBefore(newElement, add_subject[0]);
+                }*/
+
+
             });
 
             /*let items = [
