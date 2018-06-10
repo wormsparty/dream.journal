@@ -55,7 +55,7 @@ a {
 .pure-menu-active > .pure-menu-link,
 .pure-menu-link:hover,
 .pure-menu-link:focus {
-    background: #222;
+    background: #333;
     color: #FFF;
 }
 
@@ -245,4 +245,11 @@ a {
 .color-picker {
     text-indent: -9999em;
     border: 1px solid black;
+}
+
+.contextmenu {
+    position: absolute;
+    width: 120px;
+    height: 30px;
+    z-index: 10;
 }

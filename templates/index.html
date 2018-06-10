@@ -22,6 +22,11 @@
                     Sujets
                 </li>
             </ul>
+            <div class="centered">
+                <button class="primary-button pure-button" data-micromodal-trigger="modal-1" style="background: transparent">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
         </div>
     </div>
     <div id="right-menu" class="content">
@@ -84,33 +89,66 @@
                 <main class="modal__content" id="modal-1-content">
                     <form class="pure-form">
                         <button id="ajouter_couleur" class="color-picker pure-button" style="width: 30px; height: 30px; background-color: rgb(255, 255, 255);" type="button">#FFFFFF</button>
-                        <input id="ajouter_sujet" class="search-bar" style="width: 360px; left: inherit; border: 1px solid #000; box-shadow: none;"/>
-                        <br/>
+                        <input id="ajouter_sujet" class="search-bar" style="width: 360px; left: inherit; border: 1px solid #000; box-shadow: none; margin-left: 3px"/>
+                        <div style="height: 30px"></div>
+                        <button class="primary-button pure-button" style="margin-left: 300px" onclick="onAjouter()" data-micromodal-close>Ajouter</button>
                     </form>
                 </main>
                 <footer class="modal__footer">
-                    <button class="primary-button pure-button" style="margin-left: 300px" onclick="onAjouter()">Ajouter</button>
                 </footer>
             </div>
         </div>
     </div>
+    <div class="contextmenu" id="contextsujet" style="display: none">
+        <div id="to_delete_id" style="display: none"></div>
+        <ul class="pure-menu-list">
+            <li id="delete_action" class="pure-menu-item centered" style="background: #555; border: 2px solid black">
+                <a href="#" class="pure-menu-link">Supprimer</a>
+            </li>
+        </ul>
+    </div>
 
     <script type="text/javascript">
+        function add_subject(subject_list, subject) {
+            subject_list.innerHTML += '<li class="pure-menu-item">' +
+                    '<a href="#" class="pure-menu-link deletable">' +
+                        '<span class="tag" style="background: ' + subject.color + '"></span>' +
+                        subject.subject +
+                    '</a>' +
+               '</li>';
+        }
+
         function onAjouter(e) {
-            var sujet = $('#ajouter_sujet').val();
-            var couleur = $('#ajouter_couleur').text();
+            let data = {
+                subject: $('#ajouter_sujet').val(),
+                color: $('#ajouter_couleur').text()
+            };
 
-            console.log('Sujet à ajouter: ' + sujet + ', couleur: ' + couleur);
-
-            if (sujet !== undefined && sujet.trim() !== '') {
-                $.post('/add_subject', {
-                    subject: sujet,
-                    color: couleur
-                }, function() {
-                    console.log('Posté');
-                    location.reload();
+            if (data.subject !== undefined && data.subject.trim() !== '') {
+                $.post('/add_subject', data, function(r) {
+                    if (r === 'OK')
+                    {
+                        add_subject($('#subjectlist')[0], data);
+                        $(".deletable").contextmenu(delete_context);
+                    }
+                    else
+                    {
+                        // TODO: AFFICHER UNE POPUP EXISTE DEJA
+                    }
                 });
             }
+        }
+
+        function delete_context(e)
+        {
+            let context = $('#contextsujet')[0];
+
+            context.style.display = 'block';
+            context.style.left = e.pageX + 'px';
+            context.style.top = e.pageY + 'px';
+
+            $('#to_delete_id').text(e.target.text);
+            e.preventDefault();
         }
 
         $(document).ready(function()
@@ -120,33 +158,30 @@
                 saturations: 1,
             });
 
+            $('#delete_action').on('click', function() {
+                let to_del = $('#to_delete_id').text();
+
+                $.post('/delete_subject', { 'subject': to_del}, function(data) {
+                    // TODO: ENLEVER CA !!
+                    // TODO: AFFICHER UN MESSAGE SI RATE (SI ASSIGNE A UN DOCUMENT!)
+                    location.reload();
+                });
+            });
+
+            $('body').on('click', function() {
+                let context = $('#contextsujet')[0];
+                context.style.display = 'none';
+            });
+
             $.post('/get_subjects', null, function(data)
             {
                 let json = JSON.parse(data);
                 let subject_list = $('#subjectlist')[0];
 
                 for(let i = 0; i < json.length; i++)
-                {
-                    console.log(json[i]);
+                    add_subject(subject_list, json[i]);
 
-                    subject_list.innerHTML += '<li class="pure-menu-item">' +
-                            '<a href="#" class="pure-menu-link deletable">' +
-                                '<span class="tag" style="background: ' + json[i].color + '"></span>' +
-                                json[i].subject +
-                            '</a>' +
-                       '</li>';
-                }
-
-                subject_list.innerHTML += '<li id="add-subject" class="pure-menu-item centered" style="padding: 10px 0 20px 0;">' +
-                        '<button class="primary-button pure-button" data-micromodal-trigger="modal-1" style="background: transparent">' +
-                            '<i class="fas fa-plus"></i>' +
-                        '</button>' +
-                    '</li>';
-
-                $(".deletable").contextmenu(function(e) {
-                    alert( "Handler for .contextmenu() called." );
-                    e.preventDefault();
-                });
+                $(".deletable").contextmenu(delete_context);
 
                 MicroModal.init();
             });

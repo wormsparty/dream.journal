@@ -126,6 +126,8 @@ def delete_subject():
     except StopIteration:
         return 'NOT_EXIST'
 
+    # TODO: REFUSER SI ASSIGNE À AU MOINS UN DOCUMENT
+
     subjects.remove(element)
     d['subjects'] = subjects
     return 'OK'
