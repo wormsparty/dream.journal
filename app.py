@@ -17,6 +17,19 @@ class Subject:
             raise ValueError('%r is not JSON serializable' % self)
 
 
+class Template:
+    def __init__(self, name, color, content):
+        self.name = name
+        self.color = color
+        self.content = content
+
+    def serialize(self):
+        if isinstance(self, Template):
+            return {'name': self.name, 'color': self.color, 'content': self.content}
+        else:
+            raise ValueError('%r is not JSON serializable' % self)
+
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -36,6 +49,20 @@ def get_subjects():
     return json.dumps(subjects, default=Subject.serialize)
 
 
+@app.route('/get_templates', methods=['POST'])
+def get_templates():
+    d = shelve.open('database.db')
+
+    try:
+        templates = d['templates']
+    except KeyError:
+        templates = []
+    finally:
+        d.close()
+
+    return json.dumps(templates, default=Template.serialize)
+
+
 @app.route('/add_subject', methods=['POST'])
 def add_subject():
     subject = request.form['subject']
@@ -45,15 +72,39 @@ def add_subject():
 
     d = shelve.open('database.db')
 
-    # TODO: VERIFIER S'IL EXISTE DÉJÃ!!!!
-
     try:
         subjects = d['subjects']
     except KeyError:
         subjects = []
 
+    if any(s.subject == subject for s in subjects):
+        return 'ALREADY'
+
     subjects.append(Subject(subject, color))
     d['subjects'] = subjects
+    return 'OK'
+
+
+@app.route('/add_template', methods=['POST'])
+def add_template():
+    name = request.form['name']
+    color = request.form['color']
+    content = request.form['content']
+
+    print('Nouveau template: %s, couleur: %s' % (name, color))
+
+    d = shelve.open('database.db')
+
+    try:
+        templates = d['templates']
+    except KeyError:
+        templates = []
+
+    if any(s.name == name for s in templates):
+        return 'ALREADY'
+
+    templates.append(Template(name, color, content))
+    d['templates'] = templates
     return 'OK'
 
 
@@ -70,11 +121,36 @@ def delete_subject():
     except KeyError:
         subjects = []
 
-    # TODO: COMMENT ON SUPPRIME UN ELEMENT PRÉCIS SI ON LE TROUVE?
+    try:
+        element = next(x for x in subjects if x.subject == subject)
+    except StopIteration:
+        return 'NOT_EXIST'
 
-    to_delete = subjects.g
-    subjects.remove(subject)
+    subjects.remove(element)
     d['subjects'] = subjects
+    return 'OK'
+
+
+@app.route('/delete_template', methods=['POST'])
+def delete_template():
+    name = request.form['name']
+
+    print('Template à supprimer: %s' % name)
+
+    d = shelve.open('database.db')
+
+    try:
+        templates = d['templates']
+    except KeyError:
+        templates = []
+
+    try:
+        element = next(x for x in templates if x.name == name)
+    except StopIteration:
+        return 'NOT_EXIST'
+
+    templates.remove(element)
+    d['templates'] = templates
     return 'OK'
 
 

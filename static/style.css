@@ -72,40 +72,12 @@ a {
     color: #AAA;
 }
 
-.tag1 {
+.tag {
     width: 15px;
     height: 15px;
     display: inline-block;
     margin-right: 0.5em;
     border-radius: 3px;
-    background: #ffc94c;
-}
-
-.tag2 {
-    width: 15px;
-    height: 15px;
-    display: inline-block;
-    margin-right: 0.5em;
-    border-radius: 3px;
-    background: #4cffc9;
-}
-
-.tag3 {
-    width: 15px;
-    height: 15px;
-    display: inline-block;
-    margin-right: 0.5em;
-    border-radius: 3px;
-    background: #c94cff;
-}
-
-.tag4 {
-    width: 15px;
-    height: 15px;
-    display: inline-block;
-    margin-right: 0.5em;
-    border-radius: 3px;
-    background: #c9ff4c;
 }
 
 .pure-table {
@@ -272,4 +244,5 @@ a {
 
 .color-picker {
     text-indent: -9999em;
+    border: 1px solid black;
 }
