@@ -73,15 +73,19 @@ def add_subject():
     d = shelve.open('database.db')
 
     try:
-        subjects = d['subjects']
-    except KeyError:
-        subjects = []
+        try:
+            subjects = d['subjects']
+        except KeyError:
+            subjects = []
 
-    if any(s.subject == subject for s in subjects):
-        return 'ALREADY'
+        if any(s.subject == subject for s in subjects):
+            return 'ALREADY'
 
-    subjects.append(Subject(subject, color))
-    d['subjects'] = subjects
+        subjects.append(Subject(subject, color))
+        d['subjects'] = subjects
+    finally:
+        d.close()
+
     return 'OK'
 
 
@@ -96,15 +100,19 @@ def add_template():
     d = shelve.open('database.db')
 
     try:
-        templates = d['templates']
-    except KeyError:
-        templates = []
+        try:
+            templates = d['templates']
+        except KeyError:
+            templates = []
 
-    if any(s.name == name for s in templates):
-        return 'ALREADY'
+        if any(s.name == name for s in templates):
+            return 'ALREADY'
 
-    templates.append(Template(name, color, content))
-    d['templates'] = templates
+        templates.append(Template(name, color, content))
+        d['templates'] = templates
+    finally:
+        d.close()
+
     return 'OK'
 
 
@@ -117,19 +125,23 @@ def delete_subject():
     d = shelve.open('database.db')
 
     try:
-        subjects = d['subjects']
-    except KeyError:
-        subjects = []
+        try:
+            subjects = d['subjects']
+        except KeyError:
+            subjects = []
 
-    try:
-        element = next(x for x in subjects if x.subject == subject)
-    except StopIteration:
-        return 'NOT_EXIST'
+        try:
+            element = next(x for x in subjects if x.subject == subject)
+        except StopIteration:
+            return 'NOT_EXIST'
 
-    # TODO: REFUSER SI ASSIGNE À AU MOINS UN DOCUMENT
+        # TODO: REFUSER SI ASSIGNE À AU MOINS UN DOCUMENT
 
-    subjects.remove(element)
-    d['subjects'] = subjects
+        subjects.remove(element)
+        d['subjects'] = subjects
+    finally:
+        d.close()
+
     return 'OK'
 
 
@@ -142,17 +154,21 @@ def delete_template():
     d = shelve.open('database.db')
 
     try:
-        templates = d['templates']
-    except KeyError:
-        templates = []
+        try:
+            templates = d['templates']
+        except KeyError:
+            templates = []
 
-    try:
-        element = next(x for x in templates if x.name == name)
-    except StopIteration:
-        return 'NOT_EXIST'
+        try:
+            element = next(x for x in templates if x.name == name)
+        except StopIteration:
+            return 'NOT_EXIST'
 
-    templates.remove(element)
-    d['templates'] = templates
+        templates.remove(element)
+        d['templates'] = templates
+    finally:
+        d.close()
+
     return 'OK'
 
 
