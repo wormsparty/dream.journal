@@ -247,7 +247,14 @@ a {
     border: 1px solid black;
 }
 
-.contextmenu {
+.contextmenu_subject {
+    position: absolute;
+    width: 120px;
+    height: 30px;
+    z-index: 10;
+}
+
+.contextmenu_template {
     position: absolute;
     width: 120px;
     height: 30px;

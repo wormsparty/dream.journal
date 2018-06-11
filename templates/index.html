@@ -33,7 +33,7 @@
         <div class="pure-menu">
         <div style="height: 20px"></div>
         <span class="pure-menu-heading centered"></span>
-            <ul class="pure-menu-list">
+            <ul id="templatelist" class="pure-menu-list">
                 <li class="pure-menu-item centered">
                     <button class="primary-button pure-button" style="min-width: 100px; margin-bottom: 10px;">Aujourd'hui</button>
                 </li>
@@ -56,19 +56,10 @@
                     <div style="height: 20px"></div>
                     Templates
                 </li>
-                <li class="pure-menu-item">
-                    <a href="#" class="pure-menu-link">
-                        <span class="tag" style="background: #F00"></span>
-                        Rêve
-                    </a>
-                </li>
-                <li class="pure-menu-item">
-                    <a href="#" class="pure-menu-link">
-                        <span class="tag" style="background: #0F0"></span>
-                        Journée
-                    </a>
-                </li>
             </ul>
+            <div style="height: 30px"></div>
+            <button class="primary-button pure-button" style="margin-left: 300px" onclick="ajouter_subject()" data-micromodal-close>Ajouter</button>
+
         </div>
     </div>
     <div id="content" class="content">
@@ -91,7 +82,7 @@
                         <button id="ajouter_couleur" class="color-picker pure-button" style="width: 30px; height: 30px; background-color: rgb(255, 255, 255);" type="button">#FFFFFF</button>
                         <input id="ajouter_sujet" class="search-bar" style="width: 360px; left: inherit; border: 1px solid #000; box-shadow: none; margin-left: 3px"/>
                         <div style="height: 30px"></div>
-                        <button class="primary-button pure-button" style="margin-left: 300px" onclick="onAjouter()" data-micromodal-close>Ajouter</button>
+                        <button class="primary-button pure-button" style="margin-left: 300px" onclick="ajouter_subject()" data-micromodal-close>Ajouter</button>
                     </form>
                 </main>
                 <footer class="modal__footer">
@@ -99,10 +90,18 @@
             </div>
         </div>
     </div>
-    <div class="contextmenu" id="contextsujet" style="display: none">
-        <div id="to_delete_id" style="display: none"></div>
+    <div class="contextmenu_subject" id="contextsujet" style="display: none">
+        <div id="to_delete_subject" style="display: none"></div>
         <ul class="pure-menu-list">
-            <li id="delete_action" class="pure-menu-item centered" style="background: #555; border: 2px solid black">
+            <li id="delete_subject" class="pure-menu-item centered" style="background: #555; border: 2px solid black">
+                <a href="#" class="pure-menu-link">Supprimer</a>
+            </li>
+        </ul>
+    </div>
+    <div class="contextmenu_template" id="contexttemplate" style="display: none">
+        <div id="to_delete_template" style="display: none"></div>
+        <ul class="pure-menu-list">
+            <li id="delete_templatew" class="pure-menu-item centered" style="background: #555; border: 2px solid black">
                 <a href="#" class="pure-menu-link">Supprimer</a>
             </li>
         </ul>
@@ -111,14 +110,23 @@
     <script type="text/javascript">
         function add_subject(subject_list, subject) {
             subject_list.innerHTML += '<li class="pure-menu-item">' +
-                    '<a href="#" class="pure-menu-link deletable">' +
+                    '<a href="#" class="pure-menu-link deletable_subject">' +
                         '<span class="tag" style="background: ' + subject.color + '"></span>' +
                         subject.subject +
                     '</a>' +
                '</li>';
         }
 
-        function onAjouter(e) {
+        function add_template(template_list, template) {
+            template_list.innerHTML += '<li class="pure-menu-item">' +
+                    '<a href="#" class="pure-menu-link deletable_template">' +
+                        '<span class="tag" style="background: ' + template.color + '"></span>' +
+                        template.name +
+                    '</a>' +
+               '</li>';
+        }
+
+        function ajouter_subject(e) {
             let data = {
                 subject: $('#ajouter_sujet').val(),
                 color: $('#ajouter_couleur').text()
@@ -129,7 +137,7 @@
                     if (r === 'OK')
                     {
                         add_subject($('#subjectlist')[0], data);
-                        $(".deletable").contextmenu(delete_context);
+                        $(".deletable_subject").contextmenu(delete_context);
                     }
                     else
                     {
@@ -147,7 +155,21 @@
             context.style.left = e.pageX + 'px';
             context.style.top = e.pageY + 'px';
 
-            $('#to_delete_id').text(e.target.text);
+            console.log(context);
+
+            $('#to_delete_subject').text(e.target.text);
+            e.preventDefault();
+        }
+
+        function delete_template(e)
+        {
+            let context = $('#contexttemplate')[0];
+
+            context.style.display = 'block';
+            context.style.left = e.pageX + 'px';
+            context.style.top = e.pageY + 'px';
+
+            $('#to_delete_template').text(e.target.text);
             e.preventDefault();
         }
 
@@ -158,10 +180,20 @@
                 saturations: 1,
             });
 
-            $('#delete_action').on('click', function() {
-                let to_del = $('#to_delete_id').text();
+            $('#delete_subject').on('click', function() {
+                let to_del = $('#to_delete_subject').text();
 
                 $.post('/delete_subject', { 'subject': to_del}, function(data) {
+                    // TODO: ENLEVER CA !!
+                    // TODO: AFFICHER UN MESSAGE SI RATE (SI ASSIGNE A UN DOCUMENT!)
+                    location.reload();
+                });
+            });
+
+            $('#delete_template').on('click', function() {
+                let to_del = $('#to_delete_template').text();
+
+                $.post('/delete_template', { 'template': to_del}, function(data) {
                     // TODO: ENLEVER CA !!
                     // TODO: AFFICHER UN MESSAGE SI RATE (SI ASSIGNE A UN DOCUMENT!)
                     location.reload();
@@ -181,9 +213,24 @@
                 for(let i = 0; i < json.length; i++)
                     add_subject(subject_list, json[i]);
 
-                $(".deletable").contextmenu(delete_context);
+                $(".deletable_subject").contextmenu(delete_context);
 
-                MicroModal.init();
+                $.post('/get_templates', null, function(data) {
+                    json = JSON.parse(data);
+                    let template_list = $('#templatelist')[0];
+
+                    for(let i = 0; i < json.length; i++)
+                        add_template(template_list, json[i]);
+
+                    $(".deletable_template").contextmenu(delete_template);
+
+                   /* $('body').contextmenu(function(e) {
+                        e.preventDefault();
+                    });*/
+
+                    MicroModal.init();
+                });
+
             });
         });
     </script>
