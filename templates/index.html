@@ -23,7 +23,7 @@
                 </li>
             </ul>
             <div class="centered">
-                <button class="primary-button pure-button" data-micromodal-trigger="modal-1" style="background: transparent">
+                <button class="primary-button pure-button" data-micromodal-trigger="modal-create" style="background: transparent">
                     <i class="fas fa-plus"></i>
                 </button>
             </div>
@@ -65,19 +65,20 @@
     <div id="content" class="content">
         <div style="height: 45px"></div>
         <form class="pure-form">
+            <!-- TODO: J'imagine visuallement ça prend toute la place, mais ça comporte en centré -->
             <input class="search-bar" />
             <textarea class="text-content" wrap="hard"></textarea>
         </form>
     </div>
-    <div class="modal micromodal-slide" id="modal-1" aria-hidden="true">
-        <div class="modal__overlay" tabindex="-1" data-micromodal-close>
-            <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
-                <header class="modal__header">
-                    <h2 class="modal__title" id="modal-1-title">
+    <div class="modal micromodal-slide" id="modal-create" aria-hidden="true">
+        <div class="modal_overlay" tabindex="-1" data-micromodal-close>
+            <div class="modal_container" role="dialog" aria-modal="true" aria-labelledby="modal-create-title">
+                <header class="modal_header">
+                    <h2 class="modal_title" id="modal-create-title">
                         Ajout de sujet
                     </h2>
                 </header>
-                <main class="modal__content" id="modal-1-content">
+                <main class="modal_content" id="modal-create-content">
                     <form class="pure-form">
                         <button id="ajouter_couleur" class="color-picker pure-button" style="width: 30px; height: 30px; background-color: rgb(255, 255, 255);" type="button">#FFFFFF</button>
                         <input id="ajouter_sujet" class="search-bar" style="width: 360px; left: inherit; border: 1px solid #000; box-shadow: none; margin-left: 3px"/>
@@ -90,18 +91,45 @@
             </div>
         </div>
     </div>
+    <div class="modal micromodal-slide" id="modal-edit" aria-hidden="true">
+        <div class="modal_overlay" tabindex="-1" data-micromodal-close>
+            <div class="modal_container" role="dialog" aria-modal="true" aria-labelledby="modal-edit-title">
+                <header class="modal_header">
+                    <h2 class="modal_title" id="modal-edit-title">
+                        Éditer un sujet
+                    </h2>
+                </header>
+                <main class="modal_content" id="modal-edit-content">
+                    <form class="pure-form">
+                        <button id="edit_couleur" class="color-picker pure-button" style="width: 30px; height: 30px; background-color: rgb(255, 255, 255);" type="button">#FFFFFF</button>
+                        <input id="edit_sujet" class="search-bar" style="width: 360px; left: inherit; border: 1px solid #000; box-shadow: none; margin-left: 3px"/>
+                        <div style="height: 30px"></div>
+                        <button class="primary-button pure-button" style="margin-left: 300px" onclick="edit_subject()" data-micromodal-close>Sauver</button>
+                    </form>
+                </main>
+                <footer class="modal_footer">
+                </footer>
+            </div>
+        </div>
+    </div>
     <div class="contextmenu_subject" id="contextsujet" style="display: none">
         <div id="to_delete_subject" style="display: none"></div>
-        <ul class="pure-menu-list">
-            <li id="delete_subject" class="pure-menu-item centered" style="background: #555; border: 2px solid black">
+        <ul class="pure-menu-list" style="border: 1px solid black">
+            <li id="edit_subject" class="pure-menu-item centered" style="background: #555;">
+                <a href="#" class="pure-menu-link" data-micromodal-trigger="modal-edit">Éditer</a>
+            </li>
+            <li id="delete_subject" class="pure-menu-item centered" style="background: #555;">
                 <a href="#" class="pure-menu-link">Supprimer</a>
             </li>
         </ul>
     </div>
     <div class="contextmenu_template" id="contexttemplate" style="display: none">
         <div id="to_delete_template" style="display: none"></div>
-        <ul class="pure-menu-list">
-            <li id="delete_templatew" class="pure-menu-item centered" style="background: #555; border: 2px solid black">
+        <ul class="pure-menu-list" style="border: 1px solid black">
+            <li id="edit_template" class="pure-menu-item centered" style="background: #555;">
+                <a href="#" class="pure-menu-link">Éditer</a>
+            </li>
+            <li id="delete_template" class="pure-menu-item centered" style="background: #555;">
                 <a href="#" class="pure-menu-link">Supprimer</a>
             </li>
         </ul>
@@ -178,6 +206,12 @@
             new Huebee('.color-picker', {
                 notation: 'hex',
                 saturations: 1,
+            });
+
+            $('#edit_subject').on('click', function() {
+                let to_edit = $('#to_edits_subject').text();
+
+                // TODO!
             });
 
             $('#delete_subject').on('click', function() {

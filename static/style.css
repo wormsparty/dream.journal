@@ -148,7 +148,7 @@ a {
 .modal {
 }
 
-.modal__overlay {
+.modal_overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -160,7 +160,7 @@ a {
   align-items: center;
 }
 
-.modal__container {
+.modal_container {
   background-color: #333;
   padding: 30px;
   width: 470px;
@@ -170,13 +170,13 @@ a {
   box-sizing: border-box;
 }
 
-.modal__header {
+.modal_header {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.modal__title {
+.modal_title {
   margin-top: 0;
   margin-bottom: 0;
   font-weight: 600;
@@ -186,7 +186,7 @@ a {
   box-sizing: border-box;
 }
 
-.modal__content {
+.modal_content {
   margin-top: 2rem;
   margin-bottom: 2rem;
   line-height: 1.5;
