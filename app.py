@@ -1,31 +1,34 @@
 from flask import Flask, render_template, request
 import shelve
 import json
+import uuid
 
 app = Flask(__name__)
 
 
 class Subject:
-    def __init__(self, subject, color):
+    def __init__(self, uid, subject, color):
+        self.uid = uid
         self.subject = subject
         self.color = color
 
     def serialize(self):
         if isinstance(self, Subject):
-            return {'subject': self.subject, 'color': self.color}
+            return {'uid': self.uid, 'subject': self.subject, 'color': self.color}
         else:
             raise ValueError('%r is not JSON serializable' % self)
 
 
-class Template:
-    def __init__(self, name, color, content):
-        self.name = name
-        self.color = color
-        self.content = content
+class Element:
+    def __init__(self, suid, date, title, text):
+        self.suid = suid
+        self.date = date
+        self.title = title
+        self.text = text
 
     def serialize(self):
-        if isinstance(self, Template):
-            return {'name': self.name, 'color': self.color, 'content': self.content}
+        if isinstance(self, Element):
+            return {'suid': self.suid, 'date': self.date, 'title': self.title, 'text': self.text}
         else:
             raise ValueError('%r is not JSON serializable' % self)
 
@@ -49,26 +52,33 @@ def get_subjects():
     return json.dumps(subjects, default=Subject.serialize)
 
 
-@app.route('/get_templates', methods=['POST'])
-def get_templates():
+@app.route('/get_elements', methods=['POST'])
+def get_elements(suid):
     d = shelve.open('database.db')
+    elements_for_subject = []
 
     try:
-        templates = d['templates']
+        elements = d['elements']
+        elements_for_subject = []
+
+        for e in elements:
+            if e.suid == suid:
+                elements_for_subject.append(e)
     except KeyError:
-        templates = []
+        pass
     finally:
         d.close()
 
-    return json.dumps(templates, default=Template.serialize)
+    return json.dumps(elements_for_subject, default=Element.serialize)
 
 
 @app.route('/add_subject', methods=['POST'])
 def add_subject():
+    uid = str(uuid.uuid4())
     subject = request.form['subject']
     color = request.form['color']
 
-    print('Nouveau sujet: ' + subject + ', avec couleur: ' + color)
+    print('uid = ' + uid + ', sujet: ' + subject + ', couleur: ' + color)
 
     d = shelve.open('database.db')
 
@@ -78,50 +88,19 @@ def add_subject():
         except KeyError:
             subjects = []
 
-        if any(s.subject == subject for s in subjects):
-            return 'ALREADY'
-
-        subjects.append(Subject(subject, color))
+        subjects.append(Subject(uid, subject, color))
         d['subjects'] = subjects
     finally:
         d.close()
 
-    return 'OK'
-
-
-@app.route('/add_template', methods=['POST'])
-def add_template():
-    name = request.form['name']
-    color = request.form['color']
-    content = request.form['content']
-
-    print('Nouveau template: %s, couleur: %s' % (name, color))
-
-    d = shelve.open('database.db')
-
-    try:
-        try:
-            templates = d['templates']
-        except KeyError:
-            templates = []
-
-        if any(s.name == name for s in templates):
-            return 'ALREADY'
-
-        templates.append(Template(name, color, content))
-        d['templates'] = templates
-    finally:
-        d.close()
-
-    return 'OK'
+    return uid
 
 
 @app.route('/delete_subject', methods=['POST'])
 def delete_subject():
-    subject = request.form['subject']
+    uid = request.form['uid']
 
-    print('Sujet à supprimer: ' + subject)
-
+    print('Sujet à supprimer: ' + uid)
     d = shelve.open('database.db')
 
     try:
@@ -131,41 +110,24 @@ def delete_subject():
             subjects = []
 
         try:
-            element = next(x for x in subjects if x.subject == subject)
-        except StopIteration:
-            return 'NOT_EXIST'
-
-        # TODO: REFUSER SI ASSIGNE À AU MOINS UN DOCUMENT
-
-        subjects.remove(element)
-        d['subjects'] = subjects
-    finally:
-        d.close()
-
-    return 'OK'
-
-
-@app.route('/delete_template', methods=['POST'])
-def delete_template():
-    name = request.form['name']
-
-    print('Template à supprimer: %s' % name)
-
-    d = shelve.open('database.db')
-
-    try:
-        try:
-            templates = d['templates']
+            elements = d['elements']
         except KeyError:
-            templates = []
+            elements = []
 
         try:
-            element = next(x for x in templates if x.name == name)
+            subject = next(x for x in subjects if x.uid == uid)
         except StopIteration:
             return 'NOT_EXIST'
 
-        templates.remove(element)
-        d['templates'] = templates
+        # Fail if subject has at least one element assigned!
+        try:
+            element = next(x for x in elements if x.suid == uid)
+            return 'ASSIGNED'
+        except StopIteration:
+            pass
+
+        subjects.remove(subject)
+        d['subjects'] = subjects
     finally:
         d.close()
 

@@ -4,13 +4,20 @@
 {% endblock %}
 
 {% block content %}
+    <div id="top-menu" class="content">
+        <div class="pure-menu pure-menu-horizontal">
+            <ul class="pure-menu-list">
+                <li class="pure-menu-item"><a href="#" class="pure-menu-link">Test 1</a></li>
+                <li class="pure-menu-item"><a href="#" class="pure-menu-link">Test 2</a></li>
+                <li class="pure-menu-item"><a href="#" class="pure-menu-link">Test 3</a></li>
+            </ul>
+        </div>
+    </div>
     <div id="left-menu" class="content">
         <div class="pure-menu" style="height: 100%">
+            <div style="height: 20px"></div>
             <ul id="subjectlist" class="pure-menu-list">
-                <li class="pure-menu-heading">
-                    <div style="height: 20px"></div>
-                    Sujets
-                </li>
+                <!-- Populated dynamically -->
             </ul>
             <div style="left: 50px; bottom: 0; position: absolute">
                 <button class="primary-button pure-button" data-micromodal-trigger="modal-create" style="background: transparent">
@@ -23,10 +30,9 @@
     </div>
     <div id="right-menu" class="content">
         <div class="pure-menu">
-            <ul id="templatelist" class="pure-menu-list">
+            <ul id="elementslist" class="pure-menu-list">
                 <li class="pure-menu-heading">
                     <div style="height: 20px"></div>
-                    Templates
                 </li>
             </ul>
             <div class="centered">
@@ -39,9 +45,7 @@
     <div id="content" class="content">
         <div style="height: 45px"></div>
         <form class="pure-form">
-            <!-- TODO: J'imagine visuallement ça prend toute la place, mais ça comporte en centré -->
-            <input class="search-bar" />
-            <textarea class="text-content" wrap="hard"></textarea>
+            <textarea class="text-content" wrap="hard" style="bottom: 20px"></textarea>
         </form>
     </div>
     <div class="modal micromodal-slide" id="modal-create" aria-hidden="true">
@@ -60,7 +64,7 @@
                         <button class="primary-button pure-button" style="margin-left: 300px" onclick="ajouter_subject()" data-micromodal-close>Ajouter</button>
                     </form>
                 </main>
-                <footer class="modal__footer">
+                <footer class="modal_footer">
                 </footer>
             </div>
         </div>
@@ -97,32 +101,12 @@
             </li>
         </ul>
     </div>
-    <div class="contextmenu_template" id="contexttemplate" style="display: none">
-        <div id="to_delete_template" style="display: none"></div>
-        <ul class="pure-menu-list" style="border: 1px solid #DDD;">
-            <li id="edit_template" class="pure-menu-item centered" style="background: #EEE;">
-                <a href="#" class="pure-menu-link">Éditer</a>
-            </li>
-            <li id="delete_template" class="pure-menu-item centered" style="background: #EEE;">
-                <a href="#" class="pure-menu-link">Supprimer</a>
-            </li>
-        </ul>
-    </div>
 
     <script type="text/javascript">
         function add_subject(subject_list, subject) {
             subject_list.innerHTML += '<li class="pure-menu-item">' +
-                    '<a href="#" class="pure-menu-link deletable_subject" style="color: ' + subject.color + '">' +
+                    '<a href="#" id="' + subject.uid + '" class="pure-menu-link deletable_subject" style="color: ' + subject.color + '">' +
                         subject.subject +
-                    '</a>' +
-               '</li>';
-        }
-
-        function add_template(template_list, template) {
-            template_list.innerHTML += '<li class="pure-menu-item">' +
-                    '<a href="#" class="pure-menu-link deletable_template">' +
-                        '<span class="tag" style="background: ' + template.color + '"></span>' +
-                        template.name +
                     '</a>' +
                '</li>';
         }
@@ -135,15 +119,9 @@
 
             if (data.subject !== undefined && data.subject.trim() !== '') {
                 $.post('/add_subject', data, function(r) {
-                    if (r === 'OK')
-                    {
-                        add_subject($('#subjectlist')[0], data);
-                        $(".deletable_subject").contextmenu(delete_context);
-                    }
-                    else
-                    {
-                        // TODO: AFFICHER UNE POPUP EXISTE DEJA
-                    }
+                    data.uid = r;
+                    add_subject($('#subjectlist')[0], data);
+                    $(".deletable_subject").contextmenu(delete_context);
                 });
             }
         }
@@ -156,26 +134,55 @@
             context.style.left = e.pageX + 'px';
             context.style.top = e.pageY + 'px';
 
-            console.log(context);
+            console.log(e.target.id);
 
-            $('#to_delete_subject').text(e.target.text);
+            $('#to_delete_subject').text(e.target.id);
             e.preventDefault();
         }
 
-        function delete_template(e)
-        {
-            let context = $('#contexttemplate')[0];
+        var onresize = function() {
+            var h = Math.max($(window).height(), $(document).height());
 
-            context.style.display = 'block';
-            context.style.left = e.pageX + 'px';
-            context.style.top = e.pageY + 'px';
+            var left = document.getElementById('left-menu');
+            left.style.height = h - $('#left-menu').offset().top + 'px';
 
-            $('#to_delete_template').text(e.target.text);
-            e.preventDefault();
-        }
+            var right = document.getElementById('right-menu');
+            right.style.height = h - $('#right-menu').offset().top + 'px';
+
+            var content = document.getElementById('content');
+            content.style.height = h - $('#content').offset().top + 'px';
+        };
 
         $(document).ready(function()
         {
+            onresize();
+            $(window).resize(onresize);
+
+            var textarea = document.querySelector('textarea');
+
+            function onchange (e) {
+                var el = this;
+
+                if (e.keyCode === 13)
+                {
+                    if (!e.shiftKey)
+                    {
+                        e.preventDefault();
+                        alert('TODO: Sumbit to server');
+                    }
+                }
+
+                setTimeout(function() {
+                    el.style.height = el.scrollHeight + 'px';
+                }, 0);
+            }
+            textarea.addEventListener('change', onchange);
+            textarea.addEventListener('cut', onchange);
+            textarea.addEventListener('paste', onchange);
+            textarea.addEventListener('drop', onchange);
+            textarea.addEventListener('keydown', onchange);
+            textarea.addEventListener('keyup', onchange);
+
             $('#edit_subject').on('click', function() {
                 let to_edit = $('#to_edits_subject').text();
 
@@ -185,17 +192,7 @@
             $('#delete_subject').on('click', function() {
                 let to_del = $('#to_delete_subject').text();
 
-                $.post('/delete_subject', { 'subject': to_del}, function(data) {
-                    // TODO: ENLEVER CA !!
-                    // TODO: AFFICHER UN MESSAGE SI RATE (SI ASSIGNE A UN DOCUMENT!)
-                    location.reload();
-                });
-            });
-
-            $('#delete_template').on('click', function() {
-                let to_del = $('#to_delete_template').text();
-
-                $.post('/delete_template', { 'template': to_del}, function(data) {
+                $.post('/delete_subject', { 'uid': to_del}, function(data) {
                     // TODO: ENLEVER CA !!
                     // TODO: AFFICHER UN MESSAGE SI RATE (SI ASSIGNE A UN DOCUMENT!)
                     location.reload();
@@ -213,6 +210,7 @@
                 let subject_list = $('#subjectlist')[0];
 
                 add_subject(subject_list, {
+                    uid: "0",
                     subject: 'Journal',
                     color: '#4174c1'
                 });
@@ -222,22 +220,7 @@
 
                 $(".deletable_subject").contextmenu(delete_context);
 
-                $.post('/get_templates', null, function(data) {
-                    json = JSON.parse(data);
-                    let template_list = $('#templatelist')[0];
-
-                    for(let i = 0; i < json.length; i++)
-                        add_template(template_list, json[i]);
-
-                    $(".deletable_template").contextmenu(delete_template);
-
-                   /* $('body').contextmenu(function(e) {
-                        e.preventDefault();
-                    });*/
-
-                    MicroModal.init();
-                });
-
+                MicroModal.init();
             });
         });
     </script>
