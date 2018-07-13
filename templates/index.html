@@ -13,7 +13,7 @@
             </ul>
         </div>
     </div>
-    <div id="content" style="height: 100%">
+    <div id="content">
         <div class="pure-menu pure-menu-horizontal">
             <ul class="pure-menu-list">
                 <li class="pure-menu-item">
@@ -27,50 +27,54 @@
             </ul>
         </div>
         <div style="height: 45px"></div>
-        <form class="pure-form">
-            <div style="width: 100%">
-                <table style="left: 90px; width: 600px; position: absolute; background: rgb(51, 51, 51); border-radius: 4px; color: #AAA;">
-                    <tr class="tr-style">
-                        <td class="td-style">
+        <form class="pure-form" style="width: 100%">
+            <div class="table-wrapper">
+                <table class="table-style">
+                    <tr>
+                        <td class="date-odd">
                             <div class="date-style">
                                 10.01
                                 <br/>2010
                             </div>
                         </td>
-                        <td class="td-style">
-                            <div class="title-style">
+                        <td>
+                            <div class="title-style title-odd">
                                Un titre très très long pour tester parce que bon voilà, il faut tester tous les cas, eh? Encore un peu, on n'est toujours pas au bout de la case...
                             </div>
                         </td>
                     </tr>
-                    <tr class="tr-style">
-                        <td class="td-style">
+                    <tr>
+                        <td class="date-even">
                             <div class="date-style">
                                 11.01
                                 <br/>2010
                             </div>
                         </td>
-                        <td class="td-style">
-                            <div class="title-style">
+                        <td>
+                            <div class="title-style title-even">
                                J'ai demandé à la Lune
                             </div>
                         </td>
                     </tr>
-                    <tr class="tr-style">
-                        <td>
+                    <tr>
+                        <td class="date-odd">
                             <div class="date-style">
                                 11.01
                                 <br/>2010
                             </div>
                         </td>
                         <td>
-                            <div class="title-style">
-                               Classe
+                            <div class="title-style title-odd">
+                               Un titre très très long pour tester parce que bon voilà, il faut tester tous les cas, eh? Encore un peu, on n'est toujours pas au bout de la case...
+                               Un titre très très long pour tester parce que bon voilà, il faut tester tous les cas, eh? Encore un peu, on n'est toujours pas au bout de la case...
                             </div>
                         </td>
-                    </tr>                </table>
+                    </tr>
+                </table>
             </div>
-            <textarea class="text-content" placeholder="Nouveau titre..." wrap="hard"></textarea>
+            <div style="position: absolute; width: 100%; height: 110px; background: #555; bottom: 0">
+                <textarea class="text-content" placeholder="Nouveau titre..." wrap="hard"></textarea>
+            </div>
         </form>
     </div>
     <div class="modal micromodal-slide" id="modal-create" aria-hidden="true">
@@ -219,9 +223,7 @@
         {
             var textarea = document.querySelector('textarea');
 
-            function onchange (e) {
-                var el = this;
-
+            textarea.addEventListener('keydown', function (e) {
                 if (e.keyCode === 13)
                 {
                     if (!e.shiftKey)
@@ -230,20 +232,8 @@
                         alert('TODO: Sumbit to server');
                     }
                 }
-
-                setTimeout(function() {
-                    el.style.height = el.scrollHeight + 'px';
-                    el.parentElement.style.height = el.scrollHeight + 'px';
-                }, 0);
             }
-            textarea.addEventListener('change', onchange);
-            textarea.addEventListener('cut', onchange);
-            textarea.addEventListener('paste', onchange);
-            textarea.addEventListener('drop', onchange);
-            textarea.addEventListener('keydown', onchange);
-            textarea.addEventListener('keyup', onchange);
-            textarea.addEventListener('focus', onchange);
-            textarea.addEventListener('blur', onchange);
+);
 
             $('#edit_subject').on('click', function() {
                 let to_edit = $('#to_edits_subject').text();
