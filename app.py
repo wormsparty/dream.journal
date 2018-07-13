@@ -78,7 +78,7 @@ def add_subject():
     subject = request.form['subject']
     color = request.form['color']
 
-    print('uid = ' + uid + ', sujet: ' + subject + ', couleur: ' + color)
+    print('create uid = ' + uid + ', sujet: ' + subject + ', couleur: ' + color)
 
     d = shelve.open('database.db')
 
@@ -89,6 +89,36 @@ def add_subject():
             subjects = []
 
         subjects.append(Subject(uid, subject, color))
+        d['subjects'] = subjects
+    finally:
+        d.close()
+
+    return uid
+
+
+@app.route('/edit_subject', methods=['POST'])
+def edit_subject():
+    uid = request.form['uid']
+    subject = request.form['subject']
+    color = request.form['color']
+
+    print('edit uid = ' + uid + ', sujet: ' + subject + ', couleur: ' + color)
+
+    d = shelve.open('database.db')
+
+    try:
+        try:
+            subjects = d['subjects']
+        except KeyError:
+            subjects = []
+
+        try:
+            s = next(x for x in subjects if x.uid == uid)
+            s.subject = subject
+            s.color = color
+        except StopIteration:
+            return 'NOT_EXIST'
+
         d['subjects'] = subjects
     finally:
         d.close()

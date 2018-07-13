@@ -19,7 +19,7 @@ a {
     height: 44px;
     background-color: rgb(26, 26, 27);
     border-bottom: 1px solid rgb(52, 53, 54);
-    z-index: 1;
+    z-index: 0;
 }
 
 #left-menu {
@@ -38,6 +38,8 @@ a {
     top: 0;
     width: 780px;
     height: 100%;
+    overflow-x: hidden;
+    overflow-y: scroll;
     background-color: rgb(10, 10, 10);
     border-left: 1px solid rgb(52, 53, 54);
     border-right: 1px solid rgb(52, 53, 54);
@@ -104,11 +106,9 @@ a {
     position: absolute;
     left: 90px;
     width: 600px;
-    min-height: 70px;
-    max-height: 70px;
     height: 70px;
     border: 1px solid #777;
-    border-radius: 15px;
+    border-radius: 4px;
     color: #FFF;
     overflow: hidden;
     background: rgb(51, 51, 51);
@@ -127,18 +127,21 @@ a {
 }
 
 .modal {
+    z-index: 2;
+    display: none;
 }
 
 .modal_overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0,0,0,0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
 }
 
 .modal_container {
@@ -196,7 +199,6 @@ a {
 }
 
 .micromodal-slide {
-  display: none;
 }
 
 .micromodal-slide.is-open {
@@ -233,7 +235,7 @@ a {
     position: absolute;
     width: 120px;
     height: 30px;
-    z-index: 10;
+    z-index: 1;
     border-radius: 2px;
 }
 
@@ -241,7 +243,7 @@ a {
     position: absolute;
     width: 120px;
     height: 30px;
-    z-index: 10;
+    z-index: 1;
 }
 
 .search {
@@ -267,7 +269,7 @@ a {
 }
 
 .date-style {
-    width: 50px;
+    width: 55px;
     padding: 15px;
 }
 
@@ -301,7 +303,6 @@ a {
     color: #AAA;
     border-collapse: collapse;
     border-radius: 4px;
-    overflow: hidden;
 }
 
 .table-wrapper {

@@ -6,7 +6,7 @@
 {% block content %}
     <div id="left-menu" class="content">
         <div style="height: 44px"></div>
-        <div class="pure-menu" style="height: 100%">
+        <div class="pure-menu">
             <div style="height: 20px"></div>
             <ul id="subjectlist" class="pure-menu-list">
                 <!-- Populated dynamically -->
@@ -14,7 +14,7 @@
         </div>
     </div>
     <div id="content">
-        <div class="pure-menu pure-menu-horizontal">
+        <div class="pure-menu pure-menu-horizontal" style="position: fixed; z-index: 1; background: rgb(10, 10, 10); width: 690px; padding-bottom: 15px">
             <ul class="pure-menu-list">
                 <li class="pure-menu-item">
                     <div class="icon-search">
@@ -26,58 +26,21 @@
                 </li>
             </ul>
         </div>
-        <div style="height: 45px"></div>
-        <form class="pure-form" style="width: 100%">
+        <div style="height: 75px"></div>
+        <form class="pure-form" style="width: 100%;">
             <div class="table-wrapper">
-                <table class="table-style">
-                    <tr>
-                        <td class="date-odd">
-                            <div class="date-style">
-                                10.01
-                                <br/>2010
-                            </div>
-                        </td>
-                        <td>
-                            <div class="title-style title-odd">
-                               Un titre très très long pour tester parce que bon voilà, il faut tester tous les cas, eh? Encore un peu, on n'est toujours pas au bout de la case...
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="date-even">
-                            <div class="date-style">
-                                11.01
-                                <br/>2010
-                            </div>
-                        </td>
-                        <td>
-                            <div class="title-style title-even">
-                               J'ai demandé à la Lune
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="date-odd">
-                            <div class="date-style">
-                                11.01
-                                <br/>2010
-                            </div>
-                        </td>
-                        <td>
-                            <div class="title-style title-odd">
-                               Un titre très très long pour tester parce que bon voilà, il faut tester tous les cas, eh? Encore un peu, on n'est toujours pas au bout de la case...
-                               Un titre très très long pour tester parce que bon voilà, il faut tester tous les cas, eh? Encore un peu, on n'est toujours pas au bout de la case...
-                            </div>
-                        </td>
-                    </tr>
+                <table id="elementlist" class="table-style">
+                    <!-- Populated dynamically -->
                 </table>
             </div>
-            <div style="position: absolute; width: 100%; height: 110px; background: #555; bottom: 0">
-                <textarea class="text-content" placeholder="Nouveau titre..." wrap="hard"></textarea>
-            </div>
         </form>
+        <div style="width: 690px; height: 110px; background: rgb(10, 10, 10); position: fixed; left: 121px; bottom: 0">
+            <form class="pure-form" style="width: 100%;">
+                <textarea class="text-content" placeholder="Nouveau titre..." wrap="hard"></textarea>
+            </form>
+        </div>
     </div>
-    <div class="modal micromodal-slide" id="modal-create" aria-hidden="true">
+    <div class="modal micromodal-slide" id="modal-create">
         <div class="modal_overlay" tabindex="-1" data-micromodal-close>
             <div class="modal_container" role="dialog" aria-modal="true" aria-labelledby="modal-create-title">
                 <header class="modal_header">
@@ -87,10 +50,10 @@
                 </header>
                 <main class="modal_content" id="modal-create-content">
                     <form class="pure-form">
-                        <button id="ajouter_couleur" class="jscolor pure-button" style="width: 30px; height: 30px; background-color: rgb(255, 255, 255);" type="button">#FFFFFF</button>
+                        <button id="ajouter_couleur" class="jscolor pure-button" style="width: 30px; height: 30px; background-color: rgb(255, 255, 255);" type="button" value="FFFFFF"></button>
                         <input id="ajouter_sujet" class="search-bar" style="width: 360px; left: inherit; border: 1px solid #000; box-shadow: none; margin-left: 3px"/>
                         <div style="height: 30px"></div>
-                        <button class="primary-button pure-button" style="margin-left: 300px" onclick="ajouter_subject()" data-micromodal-close>Ajouter</button>
+                        <button class="primary-button pure-button" style="margin-left: 300px" onclick="ajouter_subject()">Ajouter</button>
                     </form>
                 </main>
                 <footer class="modal_footer">
@@ -98,7 +61,7 @@
             </div>
         </div>
     </div>
-    <div class="modal micromodal-slide" id="modal-edit" aria-hidden="true">
+    <div class="modal micromodal-slide" id="modal-edit">
         <div class="modal_overlay" tabindex="-1" data-micromodal-close>
             <div class="modal_container" role="dialog" aria-modal="true" aria-labelledby="modal-edit-title">
                 <header class="modal_header">
@@ -108,10 +71,10 @@
                 </header>
                 <main class="modal_content" id="modal-edit-content">
                     <form class="pure-form">
-                        <button id="edit_couleur" class="jscolor pure-button" style="width: 30px; height: 30px; background-color: rgb(255, 255, 255);" type="button">#FFFFFF</button>
+                        <button id="edit_couleur" class="jscolor pure-button" style="width: 30px; height: 30px; background-color: rgb(255, 255, 255);" value="FFFFFF" type="button"></button>
                         <input id="edit_sujet" class="search-bar" style="width: 360px; left: inherit; border: 1px solid #000; box-shadow: none; margin-left: 3px"/>
                         <div style="height: 30px"></div>
-                        <button class="primary-button pure-button" style="margin-left: 300px" onclick="edit_subject()" data-micromodal-close>Sauver</button>
+                        <button class="primary-button pure-button" style="margin-left: 300px" onclick="edit_subject()">Sauver</button>
                     </form>
                 </main>
                 <footer class="modal_footer">
@@ -119,7 +82,7 @@
             </div>
         </div>
     </div>
-    <div class="modal micromodal-slide" id="modal-message" aria-hidden="true">
+    <div class="modal micromodal-slide" id="modal-message">
         <div class="modal_overlay" tabindex="-1" data-micromodal-close>
             <div class="modal_container" role="dialog" aria-modal="true" aria-labelledby="modal-message-title">
                 <header class="modal_header">
@@ -132,7 +95,7 @@
                         Contenu du message
                     </span>
                     <div style="height: 70px"></div>
-                    <button class="primary-button pure-button" style="margin-left: 300px" data-micromodal-close>Fermer</button>
+                    <button class="primary-button pure-button" style="margin-left: 300px" onclick="close_modal('modal-message')">Fermer</button>
                 </main>
                 <footer class="modal_footer">
                 </footer>
@@ -140,10 +103,10 @@
         </div>
     </div>
     <div class="contextmenu_subject" id="contextsujet" style="display: none">
-        <div id="to_delete_subject" style="display: none"></div>
+        <div id="selected_subject" style="display: none"></div>
         <ul class="pure-menu-list" style="border: 1px solid #DDD;">
             <li id="edit_subject" class="pure-menu-item centered" style="background: rgb(26, 26, 27);">
-                <a href="#" class="pure-menu-link" data-micromodal-trigger="modal-edit">Éditer</a>
+                <a href="#" class="pure-menu-link" onclick="display_modal('modal-edit')">Éditer</a>
             </li>
             <li id="delete_subject" class="pure-menu-item centered" style="background: rgb(26, 26, 27);">
                 <a href="#" class="pure-menu-link">Supprimer</a>
@@ -153,18 +116,45 @@
     <div class="contextmenu_subject" id="contextleftmenu" style="display: none">
         <ul class="pure-menu-list" style="border: 1px solid #DDD;">
             <li id="edit_subject" class="pure-menu-item centered" style="background: rgb(26, 26, 27)">
-                <a href="#" class="pure-menu-link" data-micromodal-trigger="modal-create">Ajouter</a>
+                <a href="#" class="pure-menu-link" onclick="display_modal('modal-create')">Ajouter</a>
             </li>
         </ul>
     </div>
 
     <script type="text/javascript">
+        function display_modal(name) {
+            document.getElementById(name).style.display = 'inherit';
+        }
+
+        function close_modal(name) {
+            document.getElementById(name).style.display = 'none';
+        }
+
         function add_subject(subject_list, subject) {
             subject_list.innerHTML += '<li class="pure-menu-item">' +
                     '<a href="#" id="' + subject.uid + '" class="pure-menu-link deletable_subject" style="color: #' + subject.color + '">' +
                         subject.subject +
                     '</a>' +
                '</li>';
+        }
+
+        function add_element(element_list, element) {
+            var count = element_list.childNodes.length;
+
+            element_list.innerHTML += '<tr>' +
+                    '<td class="' + (count % 2 === 0 ? "date-even" : "date-odd") + '">' +
+                        '<div class="date-style">' +
+                            element.day +
+                            '<br/>' +
+                            element.year +
+                        '</div>' +
+                    '</td>' +
+                    '<td>' +
+                        '<div class="title-style ' + (count % 2 === 0 ? "title-even" : "title-odd") + '">' +
+                            element.title +
+                        '</div>' +
+                    '</td>' +
+                '</tr>';
         }
 
         function ajouter_subject(e) {
@@ -177,14 +167,56 @@
                 $.post('/add_subject', data, function(r) {
                     data.uid = r;
                     add_subject($('#subjectlist')[0], data);
-                    $(".deletable_subject").contextmenu(delete_context);
+                    $(".deletable_subject").contextmenu(subject_context);
+                    close_modal('modal-create');
                 });
             }
         }
 
-        function delete_context(e)
+        function edit_subject(e) {
+            let to_edit = $('#selected_subject').text();
+
+            let data = {
+                uid: to_edit,
+                subject: $('#edit_sujet').val(),
+                color: $('#edit_couleur').text()
+            };
+
+            console.log(data);
+
+            if (data.subject === undefined || data.subject.trim() === '')
+                return;
+
+            $.post('/edit_subject', data, function(status) {
+                if (status === 'NOT_EXIST')
+                {
+                    $('#modal-message-title').text('Erreur');
+                    $('#modal-message-content').text("Ce sujet n'existe pas, il a peut-être été édité dans un autre tab");
+                }
+                else
+                {
+                    var to_ed = document.getElementById(to_edit);
+
+                    to_ed.style.color = '#' + data.color;
+                    to_ed.text = data.subject;
+
+                    close_modal('modal-edit');
+                }
+            });
+        }
+
+        function hex(x) {
+            return ("0" + parseInt(x).toString(16)).slice(-2);
+        }
+
+        function rgb2hex(rgb) {
+            rgb = rgb.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(,\s*\d+\.*\d+)?\)$/);
+            return hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+        }
+
+        function subject_context(e)
         {
-            console.log('Delete context on: ' + e.target.id);
+            console.log('Context on: ' + e.target.id);
 
             let context = $('#contextsujet')[0];
             $('#contextleftmenu')[0].style.display = 'none';
@@ -198,7 +230,14 @@
             else
                 $('#delete_subject')[0].style.display = 'block';
 
-            $('#to_delete_subject').text(e.target.id);
+            $('#selected_subject').text(e.target.id);
+
+            console.log('color = ' + rgb2hex(e.target.style.color));
+
+            $('#edit_couleur').val(rgb2hex(e.target.style.color));
+            $('#edit_couleur').css('background-color', e.target.style.color);
+            $('#edit_sujet').val(e.target.text);
+
             e.preventDefault();
         }
 
@@ -232,30 +271,21 @@
                         alert('TODO: Sumbit to server');
                     }
                 }
-            }
-);
-
-            $('#edit_subject').on('click', function() {
-                let to_edit = $('#to_edits_subject').text();
-
-                // TODO!
             });
 
             $('#delete_subject').on('click', function() {
-                let to_del = $('#to_delete_subject').text();
+                let to_del = $('#selected_subject').text();
 
                 $.post('/delete_subject', { 'uid': to_del}, function(data) {
                     if (data === 'NOT_EXIST')
                     {
                         $('#modal-message-title').text('Erreur');
                         $('#modal-message-content').text("Ce sujet n'existe pas, il a peut-être été édité dans un autre tab");
-                        MicroModal.show('modal-message');
                     }
                     else if(data === 'ASSIGNED')
                     {
                         $('#modal-message-title').text('Erreur');
                         $('#modal-message-content').text("Ce sujet est encore assigné, veuillez le vider d'abord");
-                        MicroModal.show('modal-message');
                     }
                     else
                     {
@@ -284,10 +314,41 @@
                 for(let i = 0; i < json.length; i++)
                     add_subject(subject_list, json[i]);
 
-                $(".deletable_subject").contextmenu(delete_context);
-                $("#left-menu").contextmenu(add_context);
+                let element_list = $('#elementlist')[0];
 
-                MicroModal.init();
+                add_element(element_list, {
+                    day: '10 Jan',
+                    year: '2018',
+                    title: 'Un titre très très long pour tester parce que bon voilà, il faut tester tous les cas, eh? Encore un peu, on n\'est toujours pas au bout de la case...'
+                });
+
+                add_element(element_list, {
+                    day: '2 Fév',
+                    year: '2018',
+                    title: 'J\'ai demandé à la lune'
+                });
+
+                add_element(element_list, {
+                    day: '31 Mar',
+                    year: '2018',
+                    title: 'Un titre très très long pour tester parce que bon voilà, il faut tester tous les cas, eh? Encore un peu, on n\'est toujours pas au bout de la case... Un titre très très long pour tester parce que bon voilà, il faut tester tous les cas, eh? Encore un peu, on n\'est toujours pas au bout de la case...'
+                });
+
+                add_element(element_list, { day: '31 Déc', year: '2018', title: 'test' });
+                add_element(element_list, { day: '31 Déc', year: '2018', title: 'test' });
+                add_element(element_list, { day: '31 Déc', year: '2018', title: 'test' });
+                add_element(element_list, { day: '31 Déc', year: '2018', title: 'test' });
+                add_element(element_list, { day: '31 Déc', year: '2018', title: 'test' });
+                add_element(element_list, { day: '31 Déc', year: '2018', title: 'test' });
+                add_element(element_list, { day: '31 Déc', year: '2018', title: 'test' });
+                add_element(element_list, { day: '31 Déc', year: '2018', title: 'test' });
+                add_element(element_list, { day: '31 Déc', year: '2018', title: 'test' });
+                add_element(element_list, { day: '31 Déc', year: '2018', title: 'test' });
+
+                element_list.innerHTML += '<tr><td><div style="height: 110px"></div></td></tr>';
+
+                $(".deletable_subject").contextmenu(subject_context);
+                $("#left-menu").contextmenu(add_context);
             });
         });
     </script>
