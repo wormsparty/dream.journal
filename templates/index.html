@@ -7,9 +7,12 @@
     <div id="top-menu" class="content">
         <div class="pure-menu pure-menu-horizontal">
             <ul class="pure-menu-list">
-                <li class="pure-menu-item"><a href="#" class="pure-menu-link">Test 1</a></li>
-                <li class="pure-menu-item"><a href="#" class="pure-menu-link">Test 2</a></li>
-                <li class="pure-menu-item"><a href="#" class="pure-menu-link">Test 3</a></li>
+                <li class="pure-menu-item">
+                    <div class="icon-search">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.0" x="0px" y="0px" viewBox="0 0 384 512" class="icon icons8-Search" ><path d="M381 387c4 4 4 10 0 14l-43 44c-2 2-5 3-8 3s-5-1-7-3l-84-86c-25 15-52 23-80 23C72 382 0 311 0 223S72 64 159 64s158 71 158 159c0 27-7 54-21 78zM159 126c-53 0-97 43-97 97s44 97 97 97 96-43 96-97-43-97-96-97z"></path></svg>
+                    </div>
+                    <input class="search" placeholder="Search..." />
+                </li>
             </ul>
         </div>
     </div>
@@ -28,24 +31,13 @@
             </div>
         </div>
     </div>
-    <div id="right-menu" class="content">
-        <div class="pure-menu">
-            <ul id="elementslist" class="pure-menu-list">
-                <li class="pure-menu-heading">
-                    <div style="height: 20px"></div>
-                </li>
-            </ul>
-            <div class="centered">
-                <button class="primary-button pure-button" style="background: transparent" onclick="ajouter_subject()">
-                    <i class="fas fa-plus"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-    <div id="content" class="content">
+    <div id="content" style="height: 100%">
         <div style="height: 45px"></div>
         <form class="pure-form">
-            <textarea class="text-content" wrap="hard" style="bottom: 20px"></textarea>
+            <div style="width: 100%">
+                <input style="left: 90px; width: 600px; position: absolute; background: rgb(51, 51, 51)"/>
+            </div>
+            <textarea class="text-content" wrap="hard"></textarea>
         </form>
     </div>
     <div class="modal micromodal-slide" id="modal-create" aria-hidden="true">
@@ -90,6 +82,26 @@
             </div>
         </div>
     </div>
+    <div class="modal micromodal-slide" id="modal-message" aria-hidden="true">
+        <div class="modal_overlay" tabindex="-1" data-micromodal-close>
+            <div class="modal_container" role="dialog" aria-modal="true" aria-labelledby="modal-message-title">
+                <header class="modal_header">
+                    <h2 class="modal_title" id="modal-message-title">
+                        Type de message
+                    </h2>
+                </header>
+                <main class="modal_content">
+                    <span id="modal-message-content">
+                        Contenu du message
+                    </span>
+                    <div style="height: 70px"></div>
+                    <button class="primary-button pure-button" style="margin-left: 300px" data-micromodal-close>Fermer</button>
+                </main>
+                <footer class="modal_footer">
+                </footer>
+            </div>
+        </div>
+    </div>
     <div class="contextmenu_subject" id="contextsujet" style="display: none">
         <div id="to_delete_subject" style="display: none"></div>
         <ul class="pure-menu-list" style="border: 1px solid #DDD;">
@@ -98,6 +110,13 @@
             </li>
             <li id="delete_subject" class="pure-menu-item centered" style="background: #EEE;">
                 <a href="#" class="pure-menu-link">Supprimer</a>
+            </li>
+        </ul>
+    </div>
+    <div class="contextmenu_subject" id="contextleftmenu" style="display: none">
+        <ul class="pure-menu-list" style="border: 1px solid #DDD;">
+            <li id="edit_subject" class="pure-menu-item centered" style="background: #EEE;">
+                <a href="#" class="pure-menu-link" data-micromodal-trigger="modal-create">Ajouter</a>
             </li>
         </ul>
     </div>
@@ -128,15 +147,38 @@
 
         function delete_context(e)
         {
+            console.log('Delete context on: ' + e.target.id);
+
             let context = $('#contextsujet')[0];
+            $('#contextleftmenu')[0].style.display = 'none';
 
             context.style.display = 'block';
             context.style.left = e.pageX + 'px';
             context.style.top = e.pageY + 'px';
 
-            console.log(e.target.id);
+            if (e.target.id === '0')
+                $('#delete_subject')[0].style.display = 'none';
+            else
+                $('#delete_subject')[0].style.display = 'block';
 
             $('#to_delete_subject').text(e.target.id);
+            e.preventDefault();
+        }
+
+        function add_context(e)
+        {
+            if (e.target.id !== '')
+                return;
+
+            console.log('Ajouter context on: ' + e.target.id);
+
+            let context = $('#contextleftmenu')[0];
+            $('#contextsujet')[0].style.display = 'none';
+
+            context.style.display = 'block';
+            context.style.left = e.pageX + 'px';
+            context.style.top = e.pageY + 'px';
+
             e.preventDefault();
         }
 
@@ -145,9 +187,6 @@
 
             var left = document.getElementById('left-menu');
             left.style.height = h - $('#left-menu').offset().top + 'px';
-
-            var right = document.getElementById('right-menu');
-            right.style.height = h - $('#right-menu').offset().top + 'px';
 
             var content = document.getElementById('content');
             content.style.height = h - $('#content').offset().top + 'px';
@@ -174,6 +213,7 @@
 
                 setTimeout(function() {
                     el.style.height = el.scrollHeight + 'px';
+                    el.parentElement.style.height = el.scrollHeight + 'px';
                 }, 0);
             }
             textarea.addEventListener('change', onchange);
@@ -182,6 +222,8 @@
             textarea.addEventListener('drop', onchange);
             textarea.addEventListener('keydown', onchange);
             textarea.addEventListener('keyup', onchange);
+            textarea.addEventListener('focus', onchange);
+            textarea.addEventListener('blur', onchange);
 
             $('#edit_subject').on('click', function() {
                 let to_edit = $('#to_edits_subject').text();
@@ -193,15 +235,29 @@
                 let to_del = $('#to_delete_subject').text();
 
                 $.post('/delete_subject', { 'uid': to_del}, function(data) {
-                    // TODO: ENLEVER CA !!
-                    // TODO: AFFICHER UN MESSAGE SI RATE (SI ASSIGNE A UN DOCUMENT!)
-                    location.reload();
+                    if (data === 'NOT_EXIST')
+                    {
+                        $('#modal-message-title').text('Erreur');
+                        $('#modal-message-content').text("Ce sujet n'existe pas, il a peut-être été édité dans un autre tab");
+                        MicroModal.show('modal-message');
+                    }
+                    else if(data === 'ASSIGNED')
+                    {
+                        $('#modal-message-title').text('Erreur');
+                        $('#modal-message-content').text("Ce sujet est encore assigné, veuillez le vider d'abord");
+                        MicroModal.show('modal-message');
+                    }
+                    else
+                    {
+                        var to_delete = document.getElementById(to_del).parentElement;
+                        to_delete.parentElement.removeChild(to_delete);
+                    }
                 });
             });
 
             $('body').on('click', function() {
-                let context = $('#contextsujet')[0];
-                context.style.display = 'none';
+                $('#contextsujet')[0].style.display = 'none';
+                $('#contextleftmenu')[0].style.display = 'none';
             });
 
             $.post('/get_subjects', null, function(data)
@@ -219,6 +275,7 @@
                     add_subject(subject_list, json[i]);
 
                 $(".deletable_subject").contextmenu(delete_context);
+                $("#left-menu").contextmenu(add_context);
 
                 MicroModal.init();
             });
