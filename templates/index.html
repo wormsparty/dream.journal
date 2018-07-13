@@ -11,13 +11,6 @@
             <ul id="subjectlist" class="pure-menu-list">
                 <!-- Populated dynamically -->
             </ul>
-            <div style="left: 50px; bottom: 0; position: absolute">
-                <button class="primary-button pure-button" data-micromodal-trigger="modal-create" style="background: transparent">
-                    <span style="color: #777; font-size: 20px">
-                        +
-                    </span>
-                </button>
-            </div>
         </div>
     </div>
     <div id="content" style="height: 100%">
@@ -25,7 +18,9 @@
             <ul class="pure-menu-list">
                 <li class="pure-menu-item">
                     <div class="icon-search">
-                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.0" x="0px" y="0px" viewBox="0 0 384 512" class="icon icons8-Search" ><path d="M381 387c4 4 4 10 0 14l-43 44c-2 2-5 3-8 3s-5-1-7-3l-84-86c-25 15-52 23-80 23C72 382 0 311 0 223S72 64 159 64s158 71 158 159c0 27-7 54-21 78zM159 126c-53 0-97 43-97 97s44 97 97 97 96-43 96-97-43-97-96-97z"></path></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.0" x="0px" y="0px" viewBox="0 0 384 512" class="icon">
+                            <path d="M381 387c4 4 4 10 0 14l-43 44c-2 2-5 3-8 3s-5-1-7-3l-84-86c-25 15-52 23-80 23C72 382 0 311 0 223S72 64 159 64s158 71 158 159c0 27-7 54-21 78zM159 126c-53 0-97 43-97 97s44 97 97 97 96-43 96-97-43-97-96-97z"></path>
+                        </svg>
                     </div>
                     <input class="search" placeholder="Recherche..." />
                 </li>
@@ -34,9 +29,48 @@
         <div style="height: 45px"></div>
         <form class="pure-form">
             <div style="width: 100%">
-                <input style="left: 90px; width: 600px; position: absolute; background: rgb(51, 51, 51)"/>
+                <table style="left: 90px; width: 600px; position: absolute; background: rgb(51, 51, 51); border-radius: 4px; color: #AAA;">
+                    <tr class="tr-style">
+                        <td class="td-style">
+                            <div class="date-style">
+                                10.01
+                                <br/>2010
+                            </div>
+                        </td>
+                        <td class="td-style">
+                            <div class="title-style">
+                               Un titre très très long pour tester parce que bon voilà, il faut tester tous les cas, eh? Encore un peu, on n'est toujours pas au bout de la case...
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="tr-style">
+                        <td class="td-style">
+                            <div class="date-style">
+                                11.01
+                                <br/>2010
+                            </div>
+                        </td>
+                        <td class="td-style">
+                            <div class="title-style">
+                               J'ai demandé à la Lune
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="tr-style">
+                        <td>
+                            <div class="date-style">
+                                11.01
+                                <br/>2010
+                            </div>
+                        </td>
+                        <td>
+                            <div class="title-style">
+                               Classe
+                            </div>
+                        </td>
+                    </tr>                </table>
             </div>
-            <textarea class="text-content" wrap="hard"></textarea>
+            <textarea class="text-content" placeholder="Nouveau titre..." wrap="hard"></textarea>
         </form>
     </div>
     <div class="modal micromodal-slide" id="modal-create" aria-hidden="true">
