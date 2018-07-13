@@ -1,5 +1,5 @@
 body {
-    background-color: #FFF;
+    background-color: #000;
     font-size: 14pt;
     font-family: 'Source Sans Pro', sans-serif;
 }
@@ -11,27 +11,31 @@ a {
 
 #top-menu {
     width: 100%;
-    height: 2.35em;
+    height: 44px;
     background-color: rgb(26, 26, 27);
+    border-bottom: 1px solid rgb(52, 53, 54);
+    z-index: 1;
 }
 
 #left-menu {
     position: absolute;
     left: 0;
-    top: 44px;
+    top: 0;
     width: 120px;
+    height: 100%;
     background-color: rgb(26, 26, 27);
     margin: 0;
 }
 
 #content {
-    width: 780px;
-    background-color: rgb(3, 3, 3);
     position: absolute;
     left: 120px;
-    top: 44px;
-    border-left: 1px solid #DDD;
-    border-right: 1px solid #DDD;
+    top: 0;
+    width: 780px;
+    height: 100%;
+    background-color: rgb(3, 3, 3);
+    border-left: 1px solid rgb(52, 53, 54);
+    border-right: 1px solid rgb(52, 53, 54);
 }
 
 .centered {
@@ -48,7 +52,7 @@ a {
 .pure-menu-active > .pure-menu-link,
 .pure-menu-link:hover,
 .pure-menu-link:focus {
-    background: #DDD;
+    background: rgba(0, 0, 0, 0.75);
     color: #333;
 }
 
@@ -58,11 +62,11 @@ a {
 }
 
 .pure-menu-link {
-    color: #333;
+    color: #FFF;
 }
 
 .pure-menu-item {
-    color: #333;
+    color: #FFF;
 }
 
 .tag {
@@ -77,18 +81,6 @@ a {
     width: 100%;
 }
 
-.list-even {
-    background: #444;
-    color: #333;
-    text-align: center;
-}
-
-.list-odd {
-    background: #333;
-    color: #333;
-    text-align: center;
-}
-
 .pure-table {
     border: 0;
 }
@@ -99,8 +91,8 @@ a {
     border: 1px solid #DDD;
     position: absolute;
     left: 90px;
-    background: #EEE;
-    color: #333;
+    background: rgb(51, 51, 51);
+    color: #FFF;
 }
 
 .text-content {
@@ -129,14 +121,6 @@ a {
     resize: none;
 }
 
-.custom-theme {
-    color: #333;
-    background: #DDD;
-    width: 180px;
-    height: 35px;
-    border: 1px solid #EEE;
-}
-
 .modal {
 }
 
@@ -153,13 +137,14 @@ a {
 }
 
 .modal_container {
-  background-color: #DDD;
-  padding: 30px;
-  width: 470px;
-  height: 300px;
-  border-radius: 4px;
-  overflow-y: visible;
-  box-sizing: border-box;
+    background-color: rgb(3, 3, 3);
+    padding: 30px;
+    width: 470px;
+    height: 300px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    overflow-y: visible;
+    box-sizing: border-box;
 }
 
 .modal_header {
@@ -174,7 +159,7 @@ a {
   font-weight: 600;
   font-size: 1.25rem;
   line-height: 1.25;
-  color: #333;
+  color: #FFF;
   box-sizing: border-box;
 }
 
@@ -255,19 +240,21 @@ a {
 }
 
 .search {
-    margin: 8px 0 0 140px;
-    padding: 0 0 0 25px;
-    width: 780px;
+    margin: 15px 0 0 90px;
+    text-indent: 25px;
+    width: 580px;
     border: 1px solid rgb(51, 51, 51);
     background: rgb(51, 51, 51);
     color: #FFF;
     outline: 0;
+    border-radius: 4px;
+    padding: 0.5em;
 }
 
 .icon-search {
     position: absolute;
-    left: 145px;
-    top: 10px;
+    left: 100px;
+    top: 25px;
     fill: #cccccc;
     width: 16px;
     height: 16px;
