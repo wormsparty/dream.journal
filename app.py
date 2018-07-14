@@ -1,36 +1,10 @@
 from flask import Flask, render_template, request
-import shelve
+import sqlite3
 import json
 import uuid
 
 app = Flask(__name__)
-
-
-class Subject:
-    def __init__(self, uid, subject, color):
-        self.uid = uid
-        self.subject = subject
-        self.color = color
-
-    def serialize(self):
-        if isinstance(self, Subject):
-            return {'uid': self.uid, 'subject': self.subject, 'color': self.color}
-        else:
-            raise ValueError('%r is not JSON serializable' % self)
-
-
-class Element:
-    def __init__(self, suid, date, title, text):
-        self.suid = suid
-        self.date = date
-        self.title = title
-        self.text = text
-
-    def serialize(self):
-        if isinstance(self, Element):
-            return {'suid': self.suid, 'date': self.date, 'title': self.title, 'text': self.text}
-        else:
-            raise ValueError('%r is not JSON serializable' % self)
+dbfile = 'database.sqlite'
 
 
 @app.route('/')
@@ -40,36 +14,38 @@ def index():
 
 @app.route('/get_subjects', methods=['POST'])
 def get_subjects():
-    d = shelve.open('database.db')
+    conn = sqlite3.connect(dbfile)
 
     try:
-        subjects = d['subjects']
-    except KeyError:
-        subjects = []
-    finally:
-        d.close()
+        c = conn.cursor()
 
-    return json.dumps(subjects, default=Subject.serialize)
+        c.execute('SELECT * FROM subjects')
+
+        result = []
+        for s in c.fetchall():
+            result.append({'uid': s[0], 'subject': s[1], 'color': s[2]})
+
+        return json.dumps(result)
+    finally:
+        conn.close()
 
 
 @app.route('/get_elements', methods=['POST'])
 def get_elements(suid):
-    d = shelve.open('database.db')
-    elements_for_subject = []
+    conn = sqlite3.connect(dbfile)
 
     try:
-        elements = d['elements']
-        elements_for_subject = []
+        c = conn.cursor()
 
-        for e in elements:
-            if e.suid == suid:
-                elements_for_subject.append(e)
-    except KeyError:
-        pass
+        c.execute('SELECT * FROM entry WHERE suid = ?', suid)
+
+        result = []
+        for e in c.fetchall():
+            result.append({'suid': e[0], 'date': e[1], 'title': e[2], 'text': e[3]})
+
+        return json.dumps(result)
     finally:
-        d.close()
-
-    return json.dumps(elements_for_subject, default=Element.serialize)
+        conn.close()
 
 
 @app.route('/add_subject', methods=['POST'])
@@ -80,20 +56,16 @@ def add_subject():
 
     print('create uid = ' + uid + ', sujet: ' + subject + ', couleur: ' + color)
 
-    d = shelve.open('database.db')
+    conn = sqlite3.connect(dbfile)
 
     try:
-        try:
-            subjects = d['subjects']
-        except KeyError:
-            subjects = []
+        c = conn.cursor()
 
-        subjects.append(Subject(uid, subject, color))
-        d['subjects'] = subjects
+        c.execute('INSERT INTO subjects(uid, subject, color) values (?, ?, ?)', (uid, subject, color))
+        conn.commit()
+        return uid
     finally:
-        d.close()
-
-    return uid
+        conn.close()
 
 
 @app.route('/edit_subject', methods=['POST'])
@@ -104,26 +76,19 @@ def edit_subject():
 
     print('edit uid = ' + uid + ', sujet: ' + subject + ', couleur: ' + color)
 
-    d = shelve.open('database.db')
+    conn = sqlite3.connect(dbfile)
 
     try:
-        try:
-            subjects = d['subjects']
-        except KeyError:
-            subjects = []
+        c = conn.cursor()
+        c.execute('UPDATE subjects SET subject = ?, color = ? WHERE uid = ?', [(subject, color, uid)])
 
-        try:
-            s = next(x for x in subjects if x.uid == uid)
-            s.subject = subject
-            s.color = color
-        except StopIteration:
+        if c.fetchone() == 1:
+            conn.commit()
+            return uid
+        else:
             return 'NOT_EXIST'
-
-        d['subjects'] = subjects
     finally:
-        d.close()
-
-    return uid
+        conn.close()
 
 
 @app.route('/delete_subject', methods=['POST'])
@@ -131,37 +96,26 @@ def delete_subject():
     uid = request.form['uid']
 
     print('Sujet à supprimer: ' + uid)
-    d = shelve.open('database.db')
+
+    conn = sqlite3.connect(dbfile)
 
     try:
-        try:
-            subjects = d['subjects']
-        except KeyError:
-            subjects = []
+        c = conn.cursor()
 
-        try:
-            elements = d['elements']
-        except KeyError:
-            elements = []
+        c.execute('SELECT COUNT(*) FROM entry WHERE suid = ?', uid)
 
-        try:
-            subject = next(x for x in subjects if x.uid == uid)
-        except StopIteration:
-            return 'NOT_EXIST'
-
-        # Fail if subject has at least one element assigned!
-        try:
-            element = next(x for x in elements if x.suid == uid)
+        if c.fetchone() != 0:
             return 'ASSIGNED'
-        except StopIteration:
-            pass
 
-        subjects.remove(subject)
-        d['subjects'] = subjects
+        c.execute('DELETE FROM subjects WHERE uid = ?', uid)
+
+        if c.fetchone() == 1:
+            conn.commit()
+            return 'OK'
+        else:
+            return 'NOT_EXIST'
     finally:
-        d.close()
-
-    return 'OK'
+        conn.close()
 
 
 if __name__ == '__main__':
