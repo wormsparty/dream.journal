@@ -231,8 +231,6 @@
 
             $('#selected_subject').text(e.target.id);
 
-            console.log('color = ' + rgb2hex(e.target.style.color));
-
             $('#edit_couleur').val(rgb2hex(e.target.style.color));
             $('#edit_couleur').css('background-color', e.target.style.color);
             $('#edit_sujet').val(e.target.text);
@@ -259,9 +257,12 @@
 
         $(document).ready(function()
         {
-            var textarea = document.querySelector('textarea');
+            document.querySelector('body').addEventListener('keydown', function(e) {
+                if (e.keyCode === 27)
+                    $('.modal').css('display', 'none');
+            });
 
-            textarea.addEventListener('keydown', function (e) {
+            document.querySelector('textarea').addEventListener('keydown', function (e) {
                 if (e.keyCode === 13)
                 {
                     if (!e.shiftKey)
@@ -297,6 +298,12 @@
             $('body').on('click', function() {
                 $('#contextsujet')[0].style.display = 'none';
                 $('#contextleftmenu')[0].style.display = 'none';
+            });
+
+            $('.modal_overlay').on('click', function(e) {
+                if (e.target.classList.contains('modal_overlay')) {
+                    close_modal(e.target.parentElement.id);
+                }
             });
 
             $.post('/get_subjects', null, function(data)
