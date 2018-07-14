@@ -6,31 +6,44 @@ function close_modal(name) {
     document.getElementById(name).style.display = 'none';
 }
 
-function add_subject(subject_list, subject) {
-    subject_list.innerHTML += '<li class="pure-menu-item">' +
-            '<a href="#" id="' + subject.uid + '" class="pure-menu-link deletable_subject" style="color: #' + subject.color + '">' +
-                subject.subject +
-            '</a>' +
-       '</li>';
+function add_subject(subject) {
+    return '<li class="pure-menu-item">' +
+             '<a href="#" id="' + subject.uid + '" class="pure-menu-link deletable_subject" style="color: #' + subject.color + '">' +
+               subject.subject +
+             '</a>' +
+            '</li>';
 }
 
-function add_element(element_list, element) {
-    var count = element_list.childNodes.length;
+let month_to_str = {
+    '0': 'Jan.',
+    '1': 'Fév.',
+    '2': 'Mars',
+    '3': 'Avr.',
+    '4': 'Mai',
+    '5': 'Juin',
+    '6': 'Juil',
+    '7': 'Août',
+    '8': 'Sept',
+    '9': 'Oct.',
+    '10': 'Nov.',
+    '11': 'Déc.',
+};
 
-    element_list.innerHTML += '<tr>' +
-            '<td class="' + (count % 2 === 0 ? "date-even" : "date-odd") + '">' +
-                '<div class="date-style">' +
-                    element.day +
-                    '<br/>' +
-                    element.year +
-                '</div>' +
-            '</td>' +
-            '<td>' +
-                '<div class="title-style ' + (count % 2 === 0 ? "title-even" : "title-odd") + '">' +
-                    element.title +
-                '</div>' +
-            '</td>' +
-        '</tr>';
+function add_element(count, element) {
+    return '<tr>' +
+             '<td class="' + (count % 2 === 0 ? "date-even" : "date-odd") + '">' +
+               '<div class="date-style">' +
+                 element.day + ' ' + month_to_str[element.month] +
+                 '<br/>' +
+                 element.year +
+               '</div>' +
+             '</td>' +
+             '<td>' +
+               '<div class="title-style ' + (count % 2 === 0 ? "title-even" : "title-odd") + '">' +
+                 element.title +
+               '</div>' +
+             '</td>' +
+           '</tr>';
 }
 
 function add_message(message_list, element) {
@@ -54,7 +67,8 @@ function ajouter_subject(e) {
     if (data.subject !== undefined && data.subject.trim() !== '') {
         $.post('/add_subject', data, function(r) {
             data.uid = r;
-            add_subject($('#subjectlist')[0], data);
+
+            $('#subjectlist')[0].innerHTML += add_subject(data);
             $(".deletable_subject").contextmenu(subject_context);
             close_modal('modal-create');
         });
@@ -157,7 +171,15 @@ $(document).ready(function()
             if (!e.shiftKey)
             {
                 e.preventDefault();
-                alert('TODO: Sumbit to server');
+
+                let that = $(this);
+
+                $.post('/add_entry', {'suid': $('#current_suid').text(), 'title': that.val()}, function(data) {
+                    let json = JSON.parse(data);
+                    let element_list = $('#elementlist')[0];
+                    element_list.innerHTML += add_element(element_list.rows.length, json);
+                    that.val('');
+                });
             }
         }
     });
@@ -195,21 +217,56 @@ $(document).ready(function()
         }
     });
 
-    $.post('/get_subjects', null, function(data)
-    {
+    $.post('/get_subjects', null, function(data) {
         let json = JSON.parse(data);
-        let subject_list = $('#subjectlist')[0];
+        let html = '';
 
-        add_subject(subject_list, {
+        // TODO: Debugging?
+        html += add_subject({
             uid: "0",
             subject: 'Journal',
             color: '4174c1'
         });
 
-        for(let i = 0; i < json.length; i++)
-            add_subject(subject_list, json[i]);
+        for (let i = 0; i < json.length; i++)
+            html += add_subject(json[i]);
 
-        let element_list = $('#elementlist')[0];
+        $('#subjectlist')[0].innerHTML = html;
+
+        var subjects = $(".deletable_subject");
+
+        subjects.contextmenu(subject_context);
+        subjects.on('click', function(e)
+        {
+            $('#current_suid').text(this.id);
+
+            $.post('/get_entries', {'suid': this.id}, function(data) {
+                let json = JSON.parse(data);
+                let element_list = $('#elementlist')[0];
+                let html = '';
+                let count = 0;
+
+                // TODO: For debugging
+                html += add_element(count++, {
+                    day: '10',
+                    month: '0',
+                    year: '2018',
+                    title: 'Test'
+                });
+
+                for (let i = 0; i < json.length; i++)
+                   html += add_element(count++, json[i]);
+
+                element_list.innerHTML = html;
+            });
+        });
+
+        $("#left-menu").contextmenu(add_context);
+    });
+
+    /*
+        DEBUGGING
+
 
         add_element(element_list, {
             day: '10 Jan',
@@ -290,8 +347,5 @@ $(document).ready(function()
         });
 
         message_list.innerHTML += '<tr><td><div style="height: 110px"></div></td></tr>';
-
-        $(".deletable_subject").contextmenu(subject_context);
-        $("#left-menu").contextmenu(add_context);
-    });
+     */
 });

@@ -17,6 +17,7 @@ c.execute('''
   (suid text,
    uid text primary key,
    day text,
+   month text,
    year text,
    title text,
    FOREIGN KEY (suid) REFERENCES subject(uid))

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import Flask, render_template, request
 import sqlite3
 import json
@@ -19,7 +21,7 @@ def get_subjects():
     try:
         c = conn.cursor()
 
-        c.execute('SELECT * FROM subjects')
+        c.execute('SELECT uid, subject, color FROM subjects')
 
         result = []
         for s in c.fetchall():
@@ -30,19 +32,22 @@ def get_subjects():
         conn.close()
 
 
-@app.route('/get_elements', methods=['POST'])
-def get_elements(suid):
+@app.route('/get_entries', methods=['POST'])
+def get_entries():
+    suid = request.form['suid']
+
     conn = sqlite3.connect(dbfile)
 
     try:
         c = conn.cursor()
 
-        c.execute('SELECT * FROM entry WHERE suid = ?', suid)
+        c.execute('SELECT uid, day, month, year, title FROM entry WHERE suid = ?', suid)
 
         result = []
         for e in c.fetchall():
-            result.append({'suid': e[0], 'date': e[1], 'title': e[2], 'text': e[3]})
+            result.append({'suid': suid, 'uid': e[0], 'day': e[1], 'month': e[2], 'year': e[3], 'title': e[4]})
 
+        print(result)
         return json.dumps(result)
     finally:
         conn.close()
@@ -54,7 +59,7 @@ def add_subject():
     subject = request.form['subject']
     color = request.form['color']
 
-    print('create uid = ' + uid + ', sujet: ' + subject + ', couleur: ' + color)
+    print('create subject uid = {}, subject: {}, color: {}'.format(uid, subject, color))
 
     conn = sqlite3.connect(dbfile)
 
@@ -68,13 +73,42 @@ def add_subject():
         conn.close()
 
 
+@app.route('/add_entry', methods=['POST'])
+def add_entry():
+    suid = request.form['suid']
+    uid = str(uuid.uuid4())
+    title = request.form['title']
+    now = datetime.utcnow()
+
+    print('create entry uid = {}, suid = {}, title: {}, date: {}'.format(uid, suid, title, str(now)))
+
+    conn = sqlite3.connect(dbfile)
+
+    try:
+        c = conn.cursor()
+
+        day = now.day
+        month = now.month
+        year = now.year
+
+        c.execute('''
+          INSERT INTO entry(suid, uid, title, day, month, year) 
+          values (?, ?, ?, ?, ?, ?)
+        ''', (suid, uid, title, day, month, year))
+
+        conn.commit()
+        return json.dumps({ 'suid': suid, 'uid': uid, 'title': title, 'day': day, 'month': month, 'year': year})
+    finally:
+        conn.close()
+
+
 @app.route('/edit_subject', methods=['POST'])
 def edit_subject():
     uid = request.form['uid']
     subject = request.form['subject']
     color = request.form['color']
 
-    print('edit uid = ' + uid + ', sujet: ' + subject + ', couleur: ' + color)
+    print('edit subject uid = {}, sujet: {}, couleur: []'.format(uid, subject, color))
 
     conn = sqlite3.connect(dbfile)
 
@@ -87,6 +121,25 @@ def edit_subject():
             return uid
         else:
             return 'NOT_EXIST'
+    finally:
+        conn.close()
+
+
+@app.route('/edit_entry', methods=['POST'])
+def edit_entry():
+    suid = request.form['suid']
+    uid = request.form['uid']
+    title = request.form['title']
+
+    print('edit entry suid = {}, uid = {}, title: {}'.format(suid, uid, title))
+
+    conn = sqlite3.connect(dbfile)
+
+    try:
+        c = conn.cursor()
+        c.execute('UPDATE entry SET suid = ?, title = ? WHERE uid = ?', (suid, title, uid))
+        conn.commit()
+        return uid
     finally:
         conn.close()
 
@@ -114,6 +167,29 @@ def delete_subject():
             return 'OK'
         else:
             return 'NOT_EXIST'
+    finally:
+        conn.close()
+
+
+@app.route('/delete_entry', methods=['POST'])
+def delete_entry():
+    uid = request.form['uid']
+
+    print('Entry to delete: ' + uid)
+
+    conn = sqlite3.connect(dbfile)
+
+    try:
+        c = conn.cursor()
+
+        c.execute('SELECT COUNT(*) FROM message WHERE euid = ?', uid)
+
+        if c.fetchone() != 0:
+            return 'ASSIGNED'
+
+        c.execute('DELETE FROM entry WHERE uid = ?', uid)
+        conn.commit()
+        return 'OK'
     finally:
         conn.close()
 
