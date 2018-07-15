@@ -206,7 +206,7 @@ function deploy()
 
                 if (data === 'True') {
                     $('#statustext').text('Terminé!');
-                    //location.reload();
+                    location.reload();
                 }
                 else
                 {
