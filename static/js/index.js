@@ -68,9 +68,11 @@ function ajouter_subject(e) {
         $.post('/add_subject', data, function(r) {
             data.uid = r;
 
-            $('#subjectlist')[0].innerHTML += add_subject(data);
+            $('#subjectlist').append(add_subject(data));
             $(".deletable_subject").contextmenu(subject_context);
             close_modal('modal-create');
+        }).fail(function() {
+            // TODO ERREUR SERVEUR!
         });
     }
 }
@@ -104,6 +106,8 @@ function edit_subject(e) {
 
             close_modal('modal-edit');
         }
+    }).fail(function() {
+        // TODO: ERREUR SERVEUR
     });
 }
 
@@ -120,17 +124,17 @@ function subject_context(e)
 {
     console.log('Context on: ' + e.target.id);
 
-    let context = $('#contextsujet')[0];
-    $('#contextleftmenu')[0].style.display = 'none';
+    let context = $('#contextsujet');
+    $('.contextmenu').css('display', 'none');
 
-    context.style.display = 'block';
-    context.style.left = e.pageX + 'px';
-    context.style.top = e.pageY + 'px';
+    context.css('display', 'block');
+    context.css('left', e.pageX + 'px');
+    context.css('top', e.pageY + 'px');
 
     if (e.target.id === '0')
-        $('#delete_subject')[0].style.display = 'none';
+        $('#delete_subject').css('display', 'none');
     else
-        $('#delete_subject')[0].style.display = 'block';
+        $('#delete_subject').css('display', 'block');
 
     $('#selected_subject').text(e.target.id);
 
@@ -148,14 +152,75 @@ function add_context(e)
 
     console.log('Ajouter context on: ' + e.target.id);
 
-    let context = $('#contextleftmenu')[0];
-    $('#contextsujet')[0].style.display = 'none';
+    let context = $('#contextleftmenu');
+    $('.contextmenu').css('display', 'none');
 
-    context.style.display = 'block';
-    context.style.left = e.pageX + 'px';
-    context.style.top = e.pageY + 'px';
+    context.css('display', 'block');
+    context.css('left', e.pageX + 'px');
+    context.css('top', e.pageY + 'px');
 
     e.preventDefault();
+}
+
+function admin_context(e)
+{
+    if (e.target.id !== '')
+        return;
+
+    console.log('Admin context on: ' + e.target.id);
+
+    let context = $('#contextadmin');
+    $('.contextmenu').css('display', 'none');
+
+    context.css('display', 'block');
+    context.css('left', e.pageX + 'px');
+    context.css('top', e.pageY + 'px');
+
+    e.preventDefault();
+}
+
+function deploy()
+{
+    console.log("CALLING DEPLOY");
+
+    $('#statustext').text('Déploiement en cours...');
+
+    // TODO: FOR DEBUGGINB
+    $.post('/is_deployed', null, function(data) {
+        console.log('STATUS ACTUEL: ' + data);
+        $.post('/do_deploy', null, function() { });
+
+        $('#statustext').text('Le serveur redémarre...');
+        var i = 0;
+
+        function test_deployement()
+        {
+            if (i === 10)
+            {
+                $('#statustext').text('Échec');
+                return;
+            }
+
+            $.post('/is_deployed', null, function(data) {
+                console.log(data);
+
+                if (data === 'True') {
+                    $('#statustext').text('Terminé!');
+                    //location.reload();
+                }
+                else
+                {
+                    $('#statustext').text('Le serveur redémarre...' + (++i));
+                    setTimeout(test_deployement, 1000);
+                }
+            }).fail(function() {
+                $('#statustext').text('Le serveur redémarre...' + (++i));
+                setTimeout(test_deployement, 1000);
+            });
+        }
+
+        setTimeout(test_deployement, 1000);
+    });
 }
 
 $(document).ready(function()
@@ -176,9 +241,11 @@ $(document).ready(function()
 
                 $.post('/add_entry', {'suid': $('#current_suid').text(), 'title': that.val()}, function(data) {
                     let json = JSON.parse(data);
-                    let element_list = $('#elementlist')[0];
-                    element_list.innerHTML += add_element(element_list.rows.length, json);
+                    let element_list = $('#elementlist');
+                    element_list.append(add_element(element_list.rows.length, json));
                     that.val('');
+                }).fail(function() {
+                    // TODO: ERREUR SERVEUR
                 });
             }
         }
@@ -203,12 +270,13 @@ $(document).ready(function()
                 var to_delete = document.getElementById(to_del).parentElement;
                 to_delete.parentElement.removeChild(to_delete);
             }
+        }).fail(function() {
+            // TODO: ERREUR SERVEUR
         });
     });
 
     $('body').on('click', function() {
-        $('#contextsujet')[0].style.display = 'none';
-        $('#contextleftmenu')[0].style.display = 'none';
+        $('.contextmenu').css('display', 'none');
     });
 
     $('.modal_overlay').on('click', function(e) {
@@ -221,6 +289,8 @@ $(document).ready(function()
         let json = JSON.parse(data);
         let html = '';
 
+        console.log('get_subjects -> ' + json);
+
         // TODO: Debugging?
         html += add_subject({
             uid: "0",
@@ -231,20 +301,24 @@ $(document).ready(function()
         for (let i = 0; i < json.length; i++)
             html += add_subject(json[i]);
 
-        $('#subjectlist')[0].innerHTML = html;
+        $('#subjectlist').html(html);
 
         var subjects = $(".deletable_subject");
 
         subjects.contextmenu(subject_context);
         subjects.on('click', function(e)
         {
+            console.log('CLICKED');
+
             $('#current_suid').text(this.id);
 
             $.post('/get_entries', {'suid': this.id}, function(data) {
                 let json = JSON.parse(data);
-                let element_list = $('#elementlist')[0];
+                let element_list = $('#elementlist');
                 let html = '';
                 let count = 0;
+
+                console.log('get-entries -> ' + json);
 
                 // TODO: For debugging
                 html += add_element(count++, {
@@ -257,11 +331,16 @@ $(document).ready(function()
                 for (let i = 0; i < json.length; i++)
                    html += add_element(count++, json[i]);
 
-                element_list.innerHTML = html;
+                element_list.html(html);
+            }).fail(function() {
+                // TODO: ERREUR SERVEUR
             });
         });
 
-        $("#left-menu").contextmenu(add_context);
+        $("#subjectlist").contextmenu(add_context);
+        $("#icon-section").contextmenu(admin_context)
+    }).fail(function() {
+        // TODO: ERREUR SERVEUR
     });
 
     /*
