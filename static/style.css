@@ -261,6 +261,7 @@ a {
 }
 
 .title-style {
+    width: 305px;
     color: #DDD;
     padding: 5px 10px 5px 10px;
     min-height: 50px;
