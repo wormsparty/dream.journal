@@ -242,7 +242,7 @@ $(document).ready(function()
                 $.post('/add_entry', {'suid': $('#current_suid').text(), 'title': that.val()}, function(data) {
                     let json = JSON.parse(data);
                     let element_list = $('#elementlist');
-                    element_list.append(add_element(element_list.rows.length, json));
+                    element_list.append(add_element(element_list[0].rows.length, json));
                     that.val('');
                 }).fail(function() {
                     // TODO: ERREUR SERVEUR
